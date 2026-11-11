@@ -58,3 +58,18 @@ def test_proportion_moe_matches_census_formula():
     p, moe = acs._prop(20.0, 5.0, 100.0, 10.0)
     assert p == pytest.approx(0.2)
     assert moe == pytest.approx(np.sqrt(25 - 0.04 * 100) / 100)
+
+
+def _diag(lag, err, rlag=1.0, rerr=1.0, rlag_s=0.0, rerr_s=0.0):
+    return {"lm_lag_p": lag, "lm_error_p": err, "rlm_lag_p": rlag, "rlm_error_p": rerr,
+            "rlm_lag": rlag_s, "rlm_error": rerr_s}
+
+
+def test_spatial_model_choice():
+    from ceb.models import choose_spatial
+    assert choose_spatial(_diag(0.5, 0.5))[0] == "none"
+    assert choose_spatial(_diag(0.01, 0.5))[0] == "lag"
+    assert choose_spatial(_diag(0.5, 0.01))[0] == "error"
+    assert choose_spatial(_diag(0.01, 0.01, rlag=0.01, rerr=0.4))[0] == "lag"
+    assert choose_spatial(_diag(0.01, 0.01, rlag=0.4, rerr=0.01))[0] == "error"
+    assert choose_spatial(_diag(0.01, 0.01, 0.01, 0.01, rlag_s=3, rerr_s=9))[0] == "error"

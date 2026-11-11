@@ -10,7 +10,7 @@ Energy burden is the share of household income spent on home energy. This projec
 3. **High bills or low incomes?** A companion model of energy costs, separating the cost side from the income side.
 4. **Does it differ across the city?** Multiscale Geographically Weighted Regression (MGWR).
 
-> **Status:** Phase 1 (data build and exploratory spatial analysis) code is in place and tested on synthetic data. Real-data results are coming next.
+> **Status:** Phase 1 (data build, hotspot maps) and Phase 2 (OLS, spatial regression, MGWR) code is in place and tested on synthetic data. Real-data results are coming next.
 
 ## Data
 
@@ -35,6 +35,8 @@ python scripts/01_download.py           # raw data -> data/raw/
 python scripts/02_build.py              # analysis dataset + exclusion log
 python scripts/03_explore.py            # maps, Moran's I, LISA clusters
 python scripts/04_preliminary_summary.py
+python scripts/05_models.py            # OLS, LM tests, spatial lag/error/Durbin
+python scripts/06_mgwr.py              # MGWR (a few minutes)
 ```
 
 A free [Census API key](https://api.census.gov/data/key_signup.html) is optional but recommended: set it as the environment variable `CENSUS_API_KEY`.
@@ -63,6 +65,8 @@ output/tables/    regression tables, cluster lists, sample construction log
 - **Tracts in Chicago** are those with at least half of their land area inside the city boundary.
 - **Unstable tracts** (fewer than 100 households, or missing covariates) are excluded and listed in `output/tables/exclusions.md`. ACS estimates with a coefficient of variation above 0.40 are flagged and dropped in a robustness check.
 - **LISA significance** uses 9,999 permutations and a 5% false discovery rate, so hotspots are not overstated across hundreds of tracts.
+- **Model choice** between spatial lag and spatial error follows the Lagrange Multiplier decision rule (Anselin, 2005), written out in `output/tables/model_selection.md`. For lag models, direct and spillover effects are reported with simulated 95% intervals (LeSage & Pace, 2009).
+- **MGWR** uses standardized variables and AICc bandwidths; local coefficients are mapped only where significant after the package's multiple-testing correction.
 - Results describe **neighborhoods, not individual households**.
 
 ## License
