@@ -1,0 +1,14 @@
+geopandas>=1.0
+libpysal>=4.10
+esda>=2.5
+spreg>=1.5
+mgwr>=2.2
+mapclassify>=2.6
+matplotlib>=3.8
+pandas>=2.1
+numpy>=1.26
+requests>=2.31
+openpyxl>=3.1
+folium>=0.17
+jupyter
+pytest
