@@ -1,0 +1,93 @@
+# Runs the full analysis on GitHub's servers and commits the results back.
+#
+# Starts automatically when code changes, or by hand:
+#   Actions tab -> "Run analysis pipeline" -> "Run workflow".
+# Results land in output/ (open output/RESULTS.md on GitHub to see them).
+name: Run analysis pipeline
+
+on:
+  push:
+    branches: [main]
+    paths: ["src/**", "scripts/**", "requirements.txt", ".github/workflows/pipeline.yml"]
+  workflow_dispatch:
+    inputs:
+      skip_mgwr:
+        description: "Skip MGWR (the slowest step)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Unit tests
+        run: pytest -q
+
+      - name: Cache raw downloads
+        uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: raw-data-${{ hashFiles('src/ceb/config.py', 'src/ceb/download.py') }}
+
+      - name: Run pipeline (log saved to output/run_log.txt)
+        id: pipeline
+        run: |
+          mkdir -p output
+          log=output/run_log.txt
+          echo "Run started $(date -u '+%Y-%m-%d %H:%M UTC'), commit ${GITHUB_SHA::7}" > $log
+          steps="01_download 02_build 03_explore 04_preliminary_summary 05_models"
+          if [ "${{ inputs.skip_mgwr }}" != "true" ]; then steps="$steps 06_mgwr"; fi
+          steps="$steps 07_report"
+          status=0
+          for s in $steps; do
+            echo "" >> $log; echo "===== $s =====" | tee -a $log
+            set -o pipefail
+            if ! python -u scripts/$s.py 2>&1 | tee -a $log; then
+              echo "FAILED at $s" | tee -a $log
+              status=1
+              python scripts/07_report.py >> $log 2>&1 || true
+              break
+            fi
+          done
+          echo "" >> $log; echo "Run finished $(date -u '+%Y-%m-%d %H:%M UTC'), status=$status" >> $log
+          echo "status=$status" >> $GITHUB_OUTPUT
+
+      - name: Commit results back to the repo
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add -f output/ data/processed/ 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Nothing new to commit"; exit 0; fi
+          git commit -m "Pipeline results for ${GITHUB_SHA::7} (status ${{ steps.pipeline.outputs.status }})"
+          git pull --rebase -X theirs origin main
+          git push
+
+      - name: Fail the job if the pipeline failed
+        if: steps.pipeline.outputs.status != '0'
+        run: |
+          echo "The pipeline failed. See output/run_log.txt in the repo."
+          exit 1

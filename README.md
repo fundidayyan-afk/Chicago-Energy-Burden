@@ -12,6 +12,12 @@ Energy burden is the share of household income spent on home energy. This projec
 
 > **Status:** Phase 1 (data build, hotspot maps) and Phase 2 (OLS, spatial regression, MGWR) code is in place and tested on synthetic data. Real-data results are coming next.
 
+## Results
+
+**[See the latest results →](output/RESULTS.md)** (maps, cluster statistics, and regression tables, rebuilt automatically every time the code changes).
+
+The whole analysis runs on GitHub's servers through [GitHub Actions](.github/workflows/pipeline.yml). To rerun it by hand: **Actions** tab → **Run analysis pipeline** → **Run workflow**. Each run saves its log to [`output/run_log.txt`](output/run_log.txt).
+
 ## Data
 
 | Source | What it gives | Role |

@@ -8,5 +8,8 @@ if __name__ == "__main__":
     download.download_tiger()
     print("ACS 5-year, 2018-2022 and 2020-2024")
     download.download_acs(2022)
-    download.download_acs(2024)
+    try:
+        download.download_acs(2024)   # robustness check only; skip if not yet published
+    except Exception as e:
+        print(f"  note    ACS 2020-2024 not downloaded ({e}); robustness check will be skipped")
     print("Done.")

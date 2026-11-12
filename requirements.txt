@@ -12,3 +12,4 @@ openpyxl>=3.1
 folium>=0.17
 jupyter
 pytest
+tabulate>=0.9
