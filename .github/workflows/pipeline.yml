@@ -31,9 +31,9 @@ jobs:
       CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
       MPLBACKEND: Agg
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: pip
@@ -42,9 +42,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -e .
-
-      - name: Unit tests
-        run: pytest -q
 
       - name: Cache raw downloads
         uses: actions/cache@v4
@@ -58,6 +55,13 @@ jobs:
           mkdir -p output
           log=output/run_log.txt
           echo "Run started $(date -u '+%Y-%m-%d %H:%M UTC'), commit ${GITHUB_SHA::7}" > $log
+          echo "" >> $log; echo "===== unit tests =====" | tee -a $log
+          set -o pipefail
+          if ! pytest -q 2>&1 | tee -a $log; then
+            echo "FAILED at unit tests" | tee -a $log
+            echo "status=1" >> $GITHUB_OUTPUT
+            exit 0
+          fi
           steps="01_download 02_build 03_explore 04_preliminary_summary 05_models"
           if [ "${{ inputs.skip_mgwr }}" != "true" ]; then steps="$steps 06_mgwr"; fi
           steps="$steps 07_report"
