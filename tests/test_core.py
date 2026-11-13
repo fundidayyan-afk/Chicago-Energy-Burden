@@ -73,3 +73,32 @@ def test_spatial_model_choice():
     assert choose_spatial(_diag(0.01, 0.01, rlag=0.01, rerr=0.4))[0] == "lag"
     assert choose_spatial(_diag(0.01, 0.01, rlag=0.4, rerr=0.01))[0] == "error"
     assert choose_spatial(_diag(0.01, 0.01, 0.01, 0.01, rlag_s=3, rerr_s=9))[0] == "error"
+
+
+class _Resp:
+    def __init__(self, status, text):
+        self.status_code, self.text = status, text
+
+    def raise_for_status(self):
+        import requests
+        if self.status_code >= 400:
+            raise requests.HTTPError(str(self.status_code))
+
+    def json(self):
+        import json
+        return json.loads(self.text)
+
+
+def test_census_retries_without_rejected_key(monkeypatch):
+    from ceb import download
+    calls = []
+
+    def fake_get(url, params, timeout):
+        calls.append("key" in params)
+        if "key" in params:
+            return _Resp(200, "<html>Invalid Key</html>")
+        return _Resp(200, '[["NAME","state"],["Illinois","17"]]')
+
+    monkeypatch.setattr(download.requests, "get", fake_get)
+    rows = download._census_get("u", {"get": "NAME"}, key="bad")
+    assert rows[1][0] == "Illinois" and calls == [True, False]

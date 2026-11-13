@@ -78,6 +78,35 @@ ACS_VARS = {
 }
 
 
+def _census_get(url, params, key, tries=3):
+    """Call the Census API and return its rows, with readable errors.
+
+    The API answers some problems (an unactivated or wrong key, a bad
+    variable name, rate limits) with an HTML or text page instead of JSON.
+    Show that message, and if a key was rejected, retry without it.
+    """
+    import time
+
+    for attempt in range(1, tries + 1):
+        p = dict(params, key=key) if key else params
+        r = requests.get(url, params=p, timeout=120)
+        try:
+            r.raise_for_status()
+            return r.json()
+        except (ValueError, requests.HTTPError):
+            text = " ".join(r.text.split())[:400]
+            print(f"  census  HTTP {r.status_code}, not data (attempt {attempt}): {text or '(empty response)'}")
+            if key and ("key" in text.lower() or r.status_code in (401, 403)):
+                print("  census  API key rejected; retrying without a key. "
+                      "Check the CENSUS_API_KEY secret and that the key was activated by email.")
+                key = None
+                continue
+            if "unknown variable" in text.lower() or r.status_code == 400:
+                raise RuntimeError(f"Census API rejected the request: {text}")
+            time.sleep(5 * attempt)
+    raise RuntimeError("Census API did not return data after several tries; see messages above.")
+
+
 def download_acs(year=config.ACS_YEAR):
     """Pull ACS 5-year tract estimates and MOEs for the counties in config."""
     dest = config.RAW / f"acs5_{year}_tracts.csv"
@@ -96,11 +125,7 @@ def download_acs(year=config.ACS_YEAR):
                 "for": "tract:*",
                 "in": f"state:{config.STATE_FIPS} county:{county}",
             }
-            if key:
-                params["key"] = key
-            r = requests.get(config.ACS_API.format(year=year), params=params, timeout=120)
-            r.raise_for_status()
-            rows = r.json()
+            rows = _census_get(config.ACS_API.format(year=year), params, key)
             df = pd.DataFrame(rows[1:], columns=rows[0])
             df["GEOID"] = df["state"] + df["county"] + df["tract"]
             parts.append(df.set_index("GEOID").drop(columns=["state", "county", "tract"]))
