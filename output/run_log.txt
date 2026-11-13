@@ -1,8 +1,8 @@
-Run started 2026-11-13 00:04 UTC, commit 32f40ea
+Run started 2026-11-13 00:05 UTC, commit 3b931ea
 
 ===== unit tests =====
-.......                                                                  [100%]
-7 passed in 1.81s
+........                                                                 [100%]
+8 passed in 2.03s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
@@ -12,32 +12,19 @@ TIGER/Line tracts and places
   get     https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_17_tract.zip
   get     https://www2.census.gov/geo/tiger/TIGER2022/PLACE/tl_2022_17_place.zip
 ACS 5-year, 2018-2022 and 2020-2024
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/models.py", line 1116, in json
-    return complexjson.loads(self.text, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/json/__init__.py", line 346, in loads
-    return _default_decoder.decode(s)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/json/decoder.py", line 337, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/json/decoder.py", line 355, in raw_decode
-    raise JSONDecodeError("Expecting value", s, err.value) from None
-json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-
-During handling of the above exception, another exception occurred:
-
+  census  HTTP 200, not data (attempt 1): <html style="font-size: 14px;"> <head> <title>Missing Key</title> <link rel="icon" type="image/x-icon" href="favicon.ico"> <link rel="stylesheet" type="text/css" href="assets/styles.css"> <script type="text/javascript" src="assets/jquery-1.4.4.min.js"></script> <script type="text/javascript"> $(document).ready(function () { function getCookie(name) { const value = `; ${document.cookie}`; const par
+  census  HTTP 200, not data (attempt 2): <html style="font-size: 14px;"> <head> <title>Missing Key</title> <link rel="icon" type="image/x-icon" href="favicon.ico"> <link rel="stylesheet" type="text/css" href="assets/styles.css"> <script type="text/javascript" src="assets/jquery-1.4.4.min.js"></script> <script type="text/javascript"> $(document).ready(function () { function getCookie(name) { const value = `; ${document.cookie}`; const par
+  census  HTTP 200, not data (attempt 3): <html style="font-size: 14px;"> <head> <title>Missing Key</title> <link rel="icon" type="image/x-icon" href="favicon.ico"> <link rel="stylesheet" type="text/css" href="assets/styles.css"> <script type="text/javascript" src="assets/jquery-1.4.4.min.js"></script> <script type="text/javascript"> $(document).ready(function () { function getCookie(name) { const value = `; ${document.cookie}`; const par
 Traceback (most recent call last):
   File "/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/scripts/01_download.py", line 10, in <module>
     download.download_acs(2022)
-  File "/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/src/ceb/download.py", line 103, in download_acs
-    rows = r.json()
-           ^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/models.py", line 1120, in json
-    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
-requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+  File "/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/src/ceb/download.py", line 128, in download_acs
+    rows = _census_get(config.ACS_API.format(year=year), params, key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/src/ceb/download.py", line 107, in _census_get
+    raise RuntimeError("Census API did not return data after several tries; see messages above.")
+RuntimeError: Census API did not return data after several tries; see messages above.
 FAILED at 01_download
 Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/RESULTS.md
 
-Run finished 2026-11-13 00:04 UTC, status=1
+Run finished 2026-11-13 00:06 UTC, status=1
