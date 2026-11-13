@@ -89,16 +89,16 @@ class _Resp:
         return json.loads(self.text)
 
 
-def test_census_retries_without_rejected_key(monkeypatch):
+def test_census_missing_key_message(monkeypatch):
     from ceb import download
-    calls = []
+    monkeypatch.setattr(download.requests, "get",
+                        lambda url, params, timeout: _Resp(200, "<html><title>Missing Key</title></html>"))
+    with pytest.raises(RuntimeError, match="CENSUS_API_KEY"):
+        download._census_get("u", {"get": "NAME"}, key=None)
 
-    def fake_get(url, params, timeout):
-        calls.append("key" in params)
-        if "key" in params:
-            return _Resp(200, "<html>Invalid Key</html>")
-        return _Resp(200, '[["NAME","state"],["Illinois","17"]]')
 
-    monkeypatch.setattr(download.requests, "get", fake_get)
-    rows = download._census_get("u", {"get": "NAME"}, key="bad")
-    assert rows[1][0] == "Illinois" and calls == [True, False]
+def test_census_returns_rows(monkeypatch):
+    from ceb import download
+    monkeypatch.setattr(download.requests, "get",
+                        lambda url, params, timeout: _Resp(200, '[["NAME","state"],["Illinois","17"]]'))
+    assert download._census_get("u", {"get": "NAME"}, key="k")[1][0] == "Illinois"

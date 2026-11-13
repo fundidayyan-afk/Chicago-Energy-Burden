@@ -95,8 +95,17 @@ def _census_get(url, params, key, tries=3):
             return r.json()
         except (ValueError, requests.HTTPError):
             text = " ".join(r.text.split())[:400]
+            if "<title>Missing Key</title>" in r.text or "<title>Invalid Key</title>" in r.text:
+                raise RuntimeError(
+                    "The Census API needs a key. Get a free one at "
+                    "https://api.census.gov/data/key_signup.html, click the activation link in the email, "
+                    "then add it to GitHub: Settings > Secrets and variables > Actions > "
+                    "New repository secret, named CENSUS_API_KEY."
+                    if not key else
+                    "The Census API rejected the key in CENSUS_API_KEY. Check it was copied exactly and "
+                    "activated through the link in the Census email.")
             print(f"  census  HTTP {r.status_code}, not data (attempt {attempt}): {text or '(empty response)'}")
-            if key and ("key" in text.lower() or r.status_code in (401, 403)):
+            if key and r.status_code in (401, 403):
                 print("  census  API key rejected; retrying without a key. "
                       "Check the CENSUS_API_KEY secret and that the key was activated by email.")
                 key = None
