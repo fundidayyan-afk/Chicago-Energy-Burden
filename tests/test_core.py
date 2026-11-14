@@ -102,3 +102,19 @@ def test_census_returns_rows(monkeypatch):
     monkeypatch.setattr(download.requests, "get",
                         lambda url, params, timeout: _Resp(200, '[["NAME","state"],["Illinois","17"]]'))
     assert download._census_get("u", {"get": "NAME"}, key="k")[1][0] == "Illinois"
+
+
+def test_valid_unit_scaling_and_no_data_cohorts():
+    rows = lead_rows()
+    # Cohort 0: only half its households have valid data -> totals double.
+    rows["HINCP UNITS"] = [50, 300, 200, 0]
+    rows["ELEP UNITS"] = [50, 300, 200, 0]
+    rows["GASP UNITS"] = [50, 300, 200, 0]
+    rows["FULP UNITS"] = [50, 300, 200, 0]
+    t = lead.tract_burden(rows).set_index("tract")
+    a = t.loc["17031010100"]
+    assert a["income_total"] == pytest.approx(2_000_000 + 30_000_000)
+    assert a["energy_total"] == pytest.approx(300_000 + 600_000)
+    # Last cohort has no valid income data and is dropped (200 households).
+    assert t.attrs["households_dropped_no_income_data"] == 200
+    assert t.loc["17031010200", "households"] == 200

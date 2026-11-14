@@ -16,13 +16,15 @@ if __name__ == "__main__":
     lead_csv = lead.find_lead_csv(kind="AMI")
     print(f"LEAD file: {lead_csv.name}")
     lead_raw = pd.read_csv(lead_csv, low_memory=False)
-    print(f"LEAD rows: {len(lead_raw):,}; columns: {list(lead_raw.columns)}")
+    print(f"LEAD rows (Illinois): {len(lead_raw):,}")
+    fip = lead_raw["FIP"].astype(str).str.replace(r"\.0$", "", regex=True).str.zfill(11)
+    lead_raw = lead_raw[fip.isin(set(tracts["GEOID"]))]
+    print(f"LEAD rows in Chicago tracts: {len(lead_raw):,}")
     burden = lead.tract_burden(lead_raw)
     print(f"LEAD column mapping used: {burden.attrs.get('column_map')}")
     diag = burden.attrs["bracket_diagnostics"]
     diag.to_csv(config.TABLES / "lead_bracket_diagnostics.csv")
-    print("LEAD by income bracket (all Illinois rows):\n" + diag.to_string())
-    print("First 5 LEAD rows:\n" + lead_raw.head().to_string())
+    print("LEAD by income bracket (Chicago tracts):\n" + diag.to_string())
 
     cov = acs.build_covariates(acs.load_acs(config.RAW / f"acs5_{config.ACS_YEAR}_tracts.csv"))
 
@@ -42,7 +44,10 @@ if __name__ == "__main__":
     lines = ["# Sample construction log", "",
              f"- Tracts with >= {config.CITY_OVERLAP_MIN:.0%} of land area in Chicago: {len(gdf)}",
              f"- LEAD households dropped for zero/negative cohort income: "
-             f"{burden.attrs.get('households_dropped_nonpositive_income', 'n/a')}"]
+             f"{burden.attrs.get('households_dropped_nonpositive_income', 'n/a'):,.0f}",
+             f"- LEAD households dropped because their cohort has no valid income data: "
+             f"{burden.attrs.get('households_dropped_no_income_data', 0):,.0f}",
+             f"- LEAD households kept: {burden['households'].sum():,.0f}"]
     for col, why in [("flag_no_lead", "no LEAD record"),
                      ("flag_few_households", f"fewer than {config.MIN_HOUSEHOLDS} households"),
                      ("flag_missing_covariate", "a model covariate is missing"),

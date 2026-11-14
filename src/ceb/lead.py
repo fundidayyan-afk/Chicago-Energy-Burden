@@ -58,15 +58,24 @@ def standardize_columns(df):
         "gas": _match(cols, r"GASP"),
         "other_fuel": _match(cols, r"FULP"),
     }
+    # LEAD 2022 also gives, for each money column, how many of the cohort's
+    # households have a valid value ("HINCP UNITS", "ELEP UNITS", ...).
+    valid = {}
+    for k, stem in [("income", "HINCP"), ("elec", "ELEP"), ("gas", "GASP"), ("other_fuel", "FULP")]:
+        c = next((c for c in cols if re.fullmatch(rf"{stem}\s+UNITS", c.strip(), flags=re.I)), None)
+        if c:
+            valid[k] = c
     missing = [k for k, v in found.items() if v is None]
     if missing:
         raise KeyError(f"Could not find LEAD columns for {missing}. Columns are: {cols}")
     out = df[list(found.values())].copy()
     out.columns = list(found.keys())
+    for k, c in valid.items():
+        out[f"{k}_valid_units"] = df[c].to_numpy()
     # Some releases store totals (HINCP*UNITS), others per-household means.
     totals = "*" in found["income"] or "units" in found["income"].lower()
     out.attrs["money_is_total"] = totals
-    out.attrs["column_map"] = found
+    out.attrs["column_map"] = {**found, **{f"{k}_valid_units": c for k, c in valid.items()}}
     out["tract"] = out["tract"].astype(str).str.replace(r"\.0$", "", regex=True).str.zfill(11)
     return out
 
@@ -88,10 +97,23 @@ def tract_burden(raw, low_income_rule=is_low_income):
         for c in money:
             df[c] = df[c] * df["units"]
     df = df[df["units"] > 0].copy()
+    # Where LEAD reports how many households have valid data, average over
+    # those households and scale to the whole cohort (LEAD's intended use).
+    # Cohorts with no valid income data carry no information and are dropped.
+    no_data = pd.Series(False, index=df.index)
+    for c in money:
+        vc = f"{c}_valid_units"
+        if vc in df.columns:
+            v = df[vc]
+            if c == "income":
+                no_data = v <= 0
+            df[c] = np.where(v > 0, df[c] / v.where(v > 0, 1) * df["units"], 0.0)
+    no_data_units = int(df.loc[no_data, "units"].sum())
+    df = df[~no_data]
     df["energy"] = df[["elec", "gas", "other_fuel"]].sum(axis=1)
 
-    # Cohorts reporting zero or negative income have undefined burden. Drop
-    # them and keep a count so the exclusion is documented.
+    # Cohorts whose average income is zero or negative (business losses in
+    # tiny cells) have undefined burden. Drop them and count them.
     bad = df["income"] <= 0
     dropped = int(df.loc[bad, "units"].sum())
     diag = (df.assign(bad_units=np.where(bad, df["units"], 0), bad_rows=bad)
@@ -127,6 +149,7 @@ def tract_burden(raw, low_income_rule=is_low_income):
     out["li_energy_total"] = li["energy"].reindex(out.index)
     out["li_burden_pct"] = 100 * out["li_energy_total"] / out["li_income_total"]
     out.attrs["households_dropped_nonpositive_income"] = dropped
+    out.attrs["households_dropped_no_income_data"] = no_data_units
     out.attrs["bracket_diagnostics"] = diag
     out.attrs["column_map"] = getattr(raw, "attrs", {}).get("column_map") or df.attrs.get("column_map")
     return out.reset_index()
