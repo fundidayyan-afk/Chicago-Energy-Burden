@@ -83,7 +83,7 @@ def legend(fig, kind):
                       label="Total effect (own tract + spillover from neighbors)")]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.01, 0.99), ncol=2, frameon=False, fontsize=8.5)
     fig.text(0.012, 0.915, f"Effect of a one-standard-deviation increase in each variable (step shown in "
-                           f"brackets). Spatial {kind} model, 768 Chicago tracts; lines are 95% intervals.",
+                           f"brackets). Spatial {kind.capitalize()} model, 768 Chicago tracts; lines are 95% intervals.",
              ha="left", va="top", fontsize=7.5, color=MUTED)
 
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
              legend_kwds={"title": "Burden in priority tracts (%)", "loc": "lower left", "fontsize": 7,
                           "title_fontsize": 7.5})
     counts = pri["area"].value_counts()
-    plots.add_context(ax, labels=list(counts[counts >= 3].index) if pri["area"].notna().any() else None)
+    plots.add_context(ax, labels=list(counts[counts >= 5].index) if pri["area"].notna().any() else None)
     ax.set_title(f"Priority tracts: {len(pri)} tracts in significant high-burden clusters\n"
                  f"{pri['households'].sum():,.0f} households", fontsize=10)
     plots.save(fig, "map_priority.png")
