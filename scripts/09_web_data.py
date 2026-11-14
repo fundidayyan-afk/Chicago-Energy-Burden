@@ -15,6 +15,9 @@ from shapely.geometry import box
 from ceb import config
 from ceb.plots import tidy_name
 
+WEB = config.OUTPUT / "web"
+WEB.mkdir(parents=True, exist_ok=True)
+
 
 FIELDS = {  # column in the build -> short key in the web file, decimals
     "burden_pct": ("burden", 2),
