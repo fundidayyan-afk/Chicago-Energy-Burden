@@ -14,7 +14,7 @@ Energy burden is the share of household income spent on home energy. This projec
 
 ## Results
 
-**[See the latest results →](output/RESULTS.md)** (maps, cluster statistics, and regression tables, rebuilt automatically every time the code changes).
+**[See the latest results →](output/RESULTS.md)** · **[Interactive map →](https://dayyan-website.vercel.app/energy-burden.html)** (maps, cluster statistics, and regression tables, rebuilt automatically every time the code changes).
 
 The whole analysis runs on GitHub's servers through [GitHub Actions](.github/workflows/pipeline.yml). To rerun it by hand: **Actions** tab → **Run analysis pipeline** → **Run workflow**. Each run saves its log to [`output/run_log.txt`](output/run_log.txt).
 
