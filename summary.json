@@ -1,0 +1,12 @@
+{
+  "tracts": 768,
+  "households": 1054210,
+  "citywide_burden": 2.2,
+  "low_income_burden": 7.0,
+  "households_above_10": 164186,
+  "morans_i": 0.83,
+  "hotspot_tracts": 175,
+  "coldspot_tracts": 203,
+  "data_year": "LEAD 2022, ACS 2018-2022",
+  "updated": "2026-11-14"
+}
