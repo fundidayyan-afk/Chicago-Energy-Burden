@@ -1,4 +1,4 @@
-Run started 2026-11-14 17:37 UTC, commit 4900ac6
+Run started 2026-11-14 18:46 UTC, commit b0aa55a
 
 ===== unit tests =====
 .............                                                            [100%]
@@ -8,19 +8,19 @@ tests/test_core.py::test_fractional_logit_runs
     return self._fit_irls(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-13 passed, 1 warning in 1.95s
+13 passed, 1 warning in 1.74s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
-  get     https://data.openei.org/files/6219/IL-2022-LEAD-data.zip
-  get     https://data.openei.org/files/6219/Data%20Dictionary%202022.xlsx
+  cached  IL-2022-LEAD-data.zip
+  cached  LEAD_data_dictionary_2022.xlsx
 TIGER/Line tracts and places
-  get     https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_17_tract.zip
-  get     https://www2.census.gov/geo/tiger/TIGER2022/PLACE/tl_2022_17_place.zip
+  cached  tl_2022_17_tract.zip
+  cached  tl_2022_17_place.zip
 ACS 5-year, 2018-2022 and 2020-2024
-  saved   acs5_2022_tracts.csv (1551 tracts)
-  saved   acs5_2024_tracts.csv (1551 tracts)
-  saved   acs5_2022_utility_tracts.csv (1551 tracts)
+  cached  acs5_2022_tracts.csv
+  cached  acs5_2024_tracts.csv
+  cached  acs5_2022_utility_tracts.csv
 Done.
 
 ===== 02_build =====
@@ -307,7 +307,22 @@ Validation: {
 - Energy burden (%): 6 of 6 coefficients keep the same sign and significance in every specification.
 - ln(average energy cost): 6 of 6 coefficients keep the same sign and significance in every specification.
 
+===== 09_web_data =====
+{
+  "tracts": 768,
+  "households": 1054210,
+  "citywide_burden": 2.2,
+  "low_income_burden": 7.0,
+  "households_above_10": 164186,
+  "morans_i": 0.83,
+  "hotspot_tracts": 175,
+  "coldspot_tracts": 203,
+  "data_year": "LEAD 2022, ACS 2018-2022",
+  "updated": "2026-11-14"
+}
+Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/web/tracts.geojson (0.46 MB)
+
 ===== 07_report =====
 Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/RESULTS.md
 
-Run finished 2026-11-14 17:40 UTC, status=0
+Run finished 2026-11-14 18:49 UTC, status=0
