@@ -66,6 +66,7 @@ def standardize_columns(df):
     # Some releases store totals (HINCP*UNITS), others per-household means.
     totals = "*" in found["income"] or "units" in found["income"].lower()
     out.attrs["money_is_total"] = totals
+    out.attrs["column_map"] = found
     out["tract"] = out["tract"].astype(str).str.replace(r"\.0$", "", regex=True).str.zfill(11)
     return out
 
@@ -93,6 +94,11 @@ def tract_burden(raw, low_income_rule=is_low_income):
     # them and keep a count so the exclusion is documented.
     bad = df["income"] <= 0
     dropped = int(df.loc[bad, "units"].sum())
+    diag = (df.assign(bad_units=np.where(bad, df["units"], 0), bad_rows=bad)
+              .groupby("income_bracket")
+              .agg(rows=("units", "size"), households=("units", "sum"),
+                   rows_nonpos_income=("bad_rows", "sum"), households_nonpos_income=("bad_units", "sum"),
+                   min_income_total=("income", "min"), median_energy_total=("energy", "median")))
     df = df[~bad]
 
     df["cohort_burden"] = 100 * df["energy"] / df["income"]
@@ -121,6 +127,8 @@ def tract_burden(raw, low_income_rule=is_low_income):
     out["li_energy_total"] = li["energy"].reindex(out.index)
     out["li_burden_pct"] = 100 * out["li_energy_total"] / out["li_income_total"]
     out.attrs["households_dropped_nonpositive_income"] = dropped
+    out.attrs["bracket_diagnostics"] = diag
+    out.attrs["column_map"] = getattr(raw, "attrs", {}).get("column_map") or df.attrs.get("column_map")
     return out.reset_index()
 
 

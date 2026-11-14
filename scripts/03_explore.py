@@ -17,7 +17,7 @@ if __name__ == "__main__":
     # Choropleth of burden
     fig, ax = plt.subplots(figsize=(7, 9))
     gdf.plot(column="burden_pct", scheme="Quantiles", k=5, cmap="OrRd", legend=True,
-             legend_kwds={"title": "Energy burden (%)", "loc": "upper right"},
+             legend_kwds={"title": "Energy burden (%)", "loc": "lower left"},
              edgecolor="white", linewidth=0.2, ax=ax)
     ax.set_axis_off()
     ax.set_title("Household energy burden by census tract, Chicago (LEAD 2022)")
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     gdf["cluster"] = gdf["cluster"].astype("category").cat.set_categories(order)
     fig, ax = plt.subplots(figsize=(7, 9))
     gdf.plot(column="cluster", categorical=True, cmap=ListedColormap(list(CLUSTER_COLORS.values())),
-             legend=True, legend_kwds={"loc": "upper right", "title": "LISA cluster (FDR 5%)"},
+             legend=True, legend_kwds={"loc": "lower left", "title": "LISA cluster (FDR 5%)"},
              edgecolor="white", linewidth=0.2, ax=ax)
     ax.set_axis_off()
     ax.set_title("Energy burden clusters, Chicago census tracts")

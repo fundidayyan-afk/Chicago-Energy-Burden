@@ -16,7 +16,13 @@ if __name__ == "__main__":
     lead_csv = lead.find_lead_csv(kind="AMI")
     print(f"LEAD file: {lead_csv.name}")
     lead_raw = pd.read_csv(lead_csv, low_memory=False)
+    print(f"LEAD rows: {len(lead_raw):,}; columns: {list(lead_raw.columns)}")
     burden = lead.tract_burden(lead_raw)
+    print(f"LEAD column mapping used: {burden.attrs.get('column_map')}")
+    diag = burden.attrs["bracket_diagnostics"]
+    diag.to_csv(config.TABLES / "lead_bracket_diagnostics.csv")
+    print("LEAD by income bracket (all Illinois rows):\n" + diag.to_string())
+    print("First 5 LEAD rows:\n" + lead_raw.head().to_string())
 
     cov = acs.build_covariates(acs.load_acs(config.RAW / f"acs5_{config.ACS_YEAR}_tracts.csv"))
 

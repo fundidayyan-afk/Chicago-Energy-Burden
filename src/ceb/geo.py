@@ -38,6 +38,11 @@ def weights(gdf, kind="queen"):
     else:
         raise ValueError(kind)
     if w.islands:
-        print(f"  warning: {len(w.islands)} island tract(s) with no neighbors: {w.islands}")
+        ids = gdf["GEOID"].iloc[w.islands].tolist()
+        print(f"  note: {len(ids)} tract(s) with no touching neighbor {ids}; linked to nearest tract")
+        pts = gdf.copy()
+        pts["geometry"] = gdf.geometry.representative_point()
+        nn = libpysal.weights.KNN.from_dataframe(pts, k=1, use_index=False)
+        w = libpysal.weights.attach_islands(w, nn)
     w.transform = "r"
     return w
