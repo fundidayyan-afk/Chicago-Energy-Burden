@@ -1,14 +1,14 @@
-Run started 2026-11-14 19:54 UTC, commit 333ac95
+Run started 2026-11-14 23:06 UTC, commit d885367
 
 ===== unit tests =====
-.............                                                            [100%]
+.................                                                        [100%]
 =============================== warnings summary ===============================
 tests/test_core.py::test_fractional_logit_runs
   /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/statsmodels/genmod/generalized_linear_model.py:1269: PerfectSeparationWarning: Perfect separation or prediction detected, parameter may not be identified
     return self._fit_irls(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-13 passed, 1 warning in 2.83s
+17 passed, 1 warning in 2.39s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
@@ -101,34 +101,80 @@ pct_hispanic     3.01
 pct_pre1950      1.42
 pct_renter       2.49
 pct_multifam5    2.87
-
-Energy burden (%): Both robust LM tests reject; the larger statistic favors a spatial error model, and the spatial Durbin model is reported as a check.
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
   res = minimize_scalar(
 ML_Error
 ML_Lag
+ML_Lag
 
-ln(average energy cost): Both robust LM tests reject; the larger statistic favors a spatial error model, and the spatial Durbin model is reported as a check.
+Energy burden (%): LM -> error; LR -> durbin. Both restrictions are rejected (common factor LR = 34.0, p = 0.0000; SDM vs lag LR = 57.7, p = 0.0000), so the spatial Durbin model is preferred.
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
   res = minimize_scalar(
 ML_Error
 ML_Lag
+ML_Lag
 
-            outcome  model       aic    logll  moran_resid_I
-        burden_pct    OLS  1855.024 -920.512          0.363
-        burden_pct  error  1631.771 -808.886         -0.036
-        burden_pct durbin  1611.812 -791.906         -0.030
-ln_avg_energy_cost    OLS -1122.300  568.150          0.277
-ln_avg_energy_cost  error -1276.240  645.120         -0.019
-ln_avg_energy_cost durbin -1321.341  674.670         -0.009
+ln(average energy cost): LM -> error; LR -> durbin. Both restrictions are rejected (common factor LR = 59.1, p = 0.0000; SDM vs lag LR = 116.5, p = 0.0000), so the spatial Durbin model is preferred.
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+ML_Lag
+ML_Lag
+
+Electricity burden (%): LM -> error; LR -> durbin. Both restrictions are rejected (common factor LR = 28.9, p = 0.0001; SDM vs lag LR = 51.0, p = 0.0000), so the spatial Durbin model is preferred.
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+ML_Lag
+ML_Lag
+
+ln(average electricity cost): LM -> error; LR -> durbin. Both restrictions are rejected (common factor LR = 32.0, p = 0.0000; SDM vs lag LR = 55.9, p = 0.0000), so the spatial Durbin model is preferred.
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+ML_Lag
+ML_Lag
+
+Gas burden (%): LM -> error; LR -> durbin. Both restrictions are rejected (common factor LR = 35.3, p = 0.0000; SDM vs lag LR = 56.0, p = 0.0000), so the spatial Durbin model is preferred.
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+ML_Lag
+ML_Lag
+
+ln(average gas cost): LM -> error; LR -> durbin. Both restrictions are rejected (common factor LR = 55.5, p = 0.0000; SDM vs lag LR = 106.4, p = 0.0000), so the spatial Durbin model is preferred.
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+ML_Lag
+ML_Lag
+
+Electricity burden (%), heating fuel control: LM -> error; LR -> durbin. Both restrictions are rejected (common factor LR = 39.2, p = 0.0000; SDM vs lag LR = 46.3, p = 0.0000), so the spatial Durbin model is preferred.
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+ML_Lag
+ML_Lag
+
+Gas burden (%), heating fuel control: LM -> error; LR -> durbin. Both restrictions are rejected (common factor LR = 44.7, p = 0.0000; SDM vs lag LR = 64.1, p = 0.0000), so the spatial Durbin model is preferred.
+
+                 spec lm_choice choice  lr_common_factor  p_common_factor  lr_durbin_vs_lag  p_durbin_vs_lag
+          burden_pct     error durbin           33.9590           0.0000           57.7473              0.0
+  ln_avg_energy_cost     error durbin           59.1007           0.0000          116.4532              0.0
+     elec_burden_pct     error durbin           28.9231           0.0001           50.9901              0.0
+    ln_avg_elec_cost     error durbin           31.9946           0.0000           55.8608              0.0
+      gas_burden_pct     error durbin           35.2828           0.0000           56.0371              0.0
+     ln_avg_gas_cost     error durbin           55.5372           0.0000          106.4416              0.0
+elec_burden_pct_heat     error durbin           39.2298           0.0000           46.2891              0.0
+ gas_burden_pct_heat     error durbin           44.6809           0.0000           64.0910              0.0
 
 Saved tables to output/tables
 
 ===== 06_mgwr =====
 {
   "aicc": 338.846677965372,
-  "r2": 0.9432934742710039,
-  "adj_r2": 0.9299897113461166,
+  "r2": 0.943293474271004,
+  "adj_r2": 0.9299897113461167,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
@@ -138,7 +184,7 @@ Saved tables to output/tables
     "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.282588149367191,
+  "max_local_condition_number": 9.282588149367193,
   "share_tracts_cn_over_30": 0.0
 }
 Saved MGWR tables and maps
@@ -155,12 +201,8 @@ Reliable-ACS sample: 541 tracts
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
  There are 207 disconnected components.
   W.__init__(self, neighbors, id_order=ids, **kwargs)
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
+ML_Lag
+ML_Lag
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
  There are 10 disconnected components.
  There are 6 islands with ids: 140, 141, 198, 199, 209, 489.
@@ -172,9 +214,7 @@ ML_Error
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/util.py:1343: UserWarning: The weights matrix is not fully connected: 
  There are 6 disconnected components.
   return W(neighbors, weights, id_order=w.id_order, **kwargs)
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
+ML_Lag
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
  There are 2 disconnected components.
  There is 1 island with id: 363.
@@ -183,18 +223,25 @@ ML_Error
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
  There are 205 disconnected components.
   W.__init__(self, neighbors, id_order=ids, **kwargs)
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
+ML_Lag
 
-Energy burden (%)
-spec                         Main (queen, ACS 2018-22)     A. KNN-6 weights B. Reliable ACS only (n=541) C. ACS 2020-24 (n=755) stable across specs
-ln(median household income)        -1.8113*** (0.0928)  -1.8246*** (0.0943)          -1.7842*** (0.1106)    -1.5029*** (0.1000)                 yes
-% Black                             0.0135*** (0.0021)   0.0142*** (0.0020)           0.0145*** (0.0022)     0.0195*** (0.0022)                 yes
-% Hispanic                           0.0071** (0.0024)    0.0072** (0.0024)             0.0067* (0.0028)     0.0126*** (0.0025)                 yes
-% housing built before 1950          0.0058** (0.0018)   0.0061*** (0.0018)             0.0044* (0.0022)       0.0040* (0.0020)                 yes
-% renter-occupied                     -0.0013 (0.0022)     -0.0009 (0.0022)             -0.0013 (0.0028)       -0.0022 (0.0023)                 yes
-% units in 5+ unit buildings       -0.0212*** (0.0020)  -0.0212*** (0.0019)          -0.0228*** (0.0022)    -0.0201*** (0.0021)                 yes
+Energy burden (%) (durbin model, direct effects)
+spec                         Main (queen, ACS 2018-22)     A. KNN-6 weights B. Reliable ACS only (n=541) C. ACS 2020-24 (n=755)                stable across specs
+ln(median household income)        -1.7521*** (0.0965)  -1.7384*** (0.0980)          -1.6743*** (0.1128)    -1.4561*** (0.1047)                                yes
+% Black                               0.0065* (0.0025)    0.0077** (0.0025)              0.0048 (0.0027)     0.0105*** (0.0027)  sign stable, significance changes
+% Hispanic                             0.0046 (0.0029)      0.0060 (0.0030)              0.0040 (0.0033)       0.0069* (0.0030)  sign stable, significance changes
+% housing built before 1950          0.0052** (0.0018)    0.0055** (0.0018)              0.0033 (0.0023)        0.0025 (0.0020)  sign stable, significance changes
+% renter-occupied                      0.0010 (0.0022)      0.0011 (0.0022)              0.0018 (0.0028)        0.0008 (0.0023)                                yes
+% units in 5+ unit buildings       -0.0192*** (0.0021)  -0.0192*** (0.0021)          -0.0196*** (0.0024)    -0.0183*** (0.0022)                                yes
+
+Energy burden (%) (durbin model, total effects)
+spec                         Main (queen, ACS 2018-22)     A. KNN-6 weights B. Reliable ACS only (n=541) C. ACS 2020-24 (n=755)                stable across specs
+ln(median household income)        -2.2158*** (0.3063)  -2.3035*** (0.2941)          -2.0564*** (0.2395)    -2.3441*** (0.3449)                                yes
+% Black                               0.0115* (0.0048)     0.0100* (0.0047)            0.0132** (0.0039)      0.0132** (0.0051)                                yes
+% Hispanic                             0.0003 (0.0053)     -0.0014 (0.0052)              0.0029 (0.0046)        0.0049 (0.0055)                   NO: sign changes
+% housing built before 1950           -0.0081 (0.0057)     -0.0082 (0.0054)          -0.0180*** (0.0053)       -0.0059 (0.0063)  sign stable, significance changes
+% renter-occupied                      0.0083 (0.0075)      0.0092 (0.0072)             0.0142* (0.0069)        0.0112 (0.0082)  sign stable, significance changes
+% units in 5+ unit buildings       -0.0343*** (0.0056)  -0.0353*** (0.0053)          -0.0373*** (0.0044)    -0.0342*** (0.0061)                                yes
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
  There are 2 disconnected components.
  There is 1 island with id: 371.
@@ -203,12 +250,8 @@ ln(median household income)        -1.8113*** (0.0928)  -1.8246*** (0.0943)     
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
  There are 207 disconnected components.
   W.__init__(self, neighbors, id_order=ids, **kwargs)
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
+ML_Lag
+ML_Lag
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
  There are 10 disconnected components.
  There are 6 islands with ids: 140, 141, 198, 199, 209, 489.
@@ -220,9 +263,7 @@ ML_Error
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/util.py:1343: UserWarning: The weights matrix is not fully connected: 
  There are 6 disconnected components.
   return W(neighbors, weights, id_order=w.id_order, **kwargs)
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
+ML_Lag
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
  There are 2 disconnected components.
  There is 1 island with id: 363.
@@ -231,18 +272,25 @@ ML_Error
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
  There are 205 disconnected components.
   W.__init__(self, neighbors, id_order=ids, **kwargs)
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
+ML_Lag
 
-ln(average energy cost)
+ln(average energy cost) (durbin model, direct effects)
+spec                         Main (queen, ACS 2018-22)     A. KNN-6 weights B. Reliable ACS only (n=541) C. ACS 2020-24 (n=755)                stable across specs
+ln(median household income)         0.1189*** (0.0144)   0.1163*** (0.0145)           0.1167*** (0.0179)     0.1185*** (0.0146)                                yes
+% Black                             0.0014*** (0.0004)   0.0017*** (0.0004)            0.0012** (0.0004)     0.0015*** (0.0004)                                yes
+% Hispanic                           0.0013** (0.0004)    0.0014** (0.0004)              0.0009 (0.0005)     0.0015*** (0.0004)  sign stable, significance changes
+% housing built before 1950         0.0011*** (0.0003)    0.0010** (0.0003)           0.0015*** (0.0004)     0.0010*** (0.0003)                                yes
+% renter-occupied                  -0.0014*** (0.0003)  -0.0016*** (0.0003)          -0.0017*** (0.0004)      -0.0008* (0.0003)                                yes
+% units in 5+ unit buildings       -0.0073*** (0.0003)  -0.0073*** (0.0003)          -0.0075*** (0.0004)    -0.0075*** (0.0003)                                yes
+
+ln(average energy cost) (durbin model, total effects)
 spec                         Main (queen, ACS 2018-22)     A. KNN-6 weights B. Reliable ACS only (n=541) C. ACS 2020-24 (n=755) stable across specs
-ln(median household income)         0.0996*** (0.0140)   0.0956*** (0.0140)           0.0904*** (0.0174)     0.1036*** (0.0140)                 yes
-% Black                             0.0028*** (0.0003)   0.0028*** (0.0003)           0.0028*** (0.0003)     0.0028*** (0.0003)                 yes
-% Hispanic                          0.0019*** (0.0004)   0.0019*** (0.0004)           0.0015*** (0.0004)     0.0019*** (0.0003)                 yes
-% housing built before 1950         0.0013*** (0.0003)   0.0012*** (0.0003)           0.0016*** (0.0004)     0.0011*** (0.0003)                 yes
-% renter-occupied                  -0.0020*** (0.0003)  -0.0020*** (0.0003)          -0.0022*** (0.0004)    -0.0012*** (0.0003)                 yes
-% units in 5+ unit buildings       -0.0078*** (0.0003)  -0.0077*** (0.0003)          -0.0083*** (0.0003)    -0.0081*** (0.0003)                 yes
+ln(median household income)         0.1585*** (0.0408)    0.1474** (0.0411)           0.1664*** (0.0376)     0.1769*** (0.0412)                 yes
+% Black                             0.0035*** (0.0006)   0.0032*** (0.0006)           0.0037*** (0.0006)     0.0038*** (0.0006)                 yes
+% Hispanic                            0.0016* (0.0007)     0.0014* (0.0007)             0.0019* (0.0007)       0.0016* (0.0006)                 yes
+% housing built before 1950           -0.0006 (0.0007)      0.0000 (0.0007)             -0.0005 (0.0008)        0.0002 (0.0008)    NO: sign changes
+% renter-occupied                      0.0018 (0.0010)      0.0017 (0.0010)              0.0010 (0.0011)        0.0010 (0.0010)                 yes
+% units in 5+ unit buildings       -0.0110*** (0.0007)  -0.0109*** (0.0007)          -0.0109*** (0.0007)    -0.0105*** (0.0007)                 yes
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
  There are 2 disconnected components.
  There is 1 island with id: 371.
@@ -251,9 +299,7 @@ ln(median household income)         0.0996*** (0.0140)   0.0956*** (0.0140)     
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
  There are 207 disconnected components.
   W.__init__(self, neighbors, id_order=ids, **kwargs)
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
+ML_Lag
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
  There are 2 disconnected components.
  There is 1 island with id: 371.
@@ -262,9 +308,7 @@ ML_Error
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
  There are 207 disconnected components.
   W.__init__(self, neighbors, id_order=ids, **kwargs)
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
-  res = minimize_scalar(
-ML_Error
+ML_Lag
 
 Threshold outcomes (fractional logit, average marginal effects)
                          model          term     ame  ame_se      p
@@ -296,7 +340,7 @@ Validation: {
   },
   "annual_cost": {
     "n": 768,
-    "pearson": 0.8572405162859253,
+    "pearson": 0.8572405162859255,
     "spearman": 0.8498965738450349,
     "top_quintile_overlap": 0.6428571428571429
   },
@@ -306,8 +350,41 @@ Validation: {
 }
 # Robustness checks
 
-- Energy burden (%): 6 of 6 coefficients keep the same sign and significance in every specification.
-- ln(average energy cost): 6 of 6 coefficients keep the same sign and significance in every specification.
+- Energy burden (%), direct effects (durbin model): 3 of 6 keep the same sign and significance in every specification.
+- Energy burden (%), total effects (durbin model): 3 of 6 keep the same sign and significance in every specification.
+- ln(average energy cost), direct effects (durbin model): 5 of 6 keep the same sign and significance in every specification.
+- ln(average energy cost), total effects (durbin model): 5 of 6 keep the same sign and significance in every specification.
+
+===== 10_policy =====
+LEAD household groups in the sample: 189,286 (1,054,210 households)
+
+City: 1,054,210 households; 281,461 above 6%; 164,186 above 10%
+                   budget                                rule  tracts  households  hh_above_10  share_of_city_above_10  hh_above_6  share_of_city_above_6  precision_above_10  low_income_hh  overlap_with_clusters
+    Same number of tracts         High-burden clusters (LISA)     175  177342.133    58893.984                   0.359   93905.499                  0.334               0.332     127037.488                    175
+    Same number of tracts                Lowest median income     175  182672.665    64163.491                   0.391   97459.533                  0.346               0.351     140645.721                    105
+    Same number of tracts                Highest poverty rate     175  187611.355    61036.655                   0.372   92489.528                  0.329               0.325     138092.054                     92
+    Same number of tracts Highest measured burden (benchmark)     175  178520.313    63191.413                   0.385  100366.345                  0.357               0.354     133417.897                    131
+Same number of households         High-burden clusters (LISA)     175  177342.133    58893.984                   0.359   93905.499                  0.334               0.332     127037.488                    175
+Same number of households                Lowest median income     170  177590.875    62573.942                   0.381   94902.776                  0.337               0.352     136852.595                    103
+Same number of households                Highest poverty rate     166  178000.269    57419.428                   0.350   87092.802                  0.309               0.323     130807.774                     86
+Same number of households Highest measured burden (benchmark)     174  177891.773    62998.383                   0.384  100088.918                  0.356               0.354     132951.717                    131
+
+                                  who  cost_cut  households_served  burden_before  burden_after  li_burden_before  li_burden_after  above_6_before  above_6_after  dropped_below_6  above_10_before  above_10_after  dropped_below_10  city_above_6_before  city_above_6_after  annual_savings_total  annual_savings_per_served_hh
+                       All households       0.1          177342.13           5.43          4.88              9.54             8.59         93905.5       84821.91          9083.59         58893.98        53881.07           5012.91            281460.95           272377.36           53717258.63                        302.90
+                       All households       0.2          177342.13           5.43          4.34              9.54             7.63         93905.5       77451.65         16453.85         58893.98        48959.60           9934.38            281460.95           265007.10          107434517.27                        605.80
+                       All households       0.3          177342.13           5.43          3.80              9.54             6.68         93905.5       68359.36         25546.14         58893.98        43530.68          15363.30            281460.95           255914.81          161151775.90                        908.71
+Low-income households (<80% AMI) only       0.1          127037.49           5.43          5.06              9.54             8.59         93905.5       85511.78          8393.72         58893.98        53962.48           4931.51            281460.95           273067.23           36304927.13                        285.78
+Low-income households (<80% AMI) only       0.2          127037.49           5.43          4.69              9.54             7.63         93905.5       78636.36         15269.14         58893.98        49134.38           9759.61            281460.95           266191.81           72609854.26                        571.56
+Low-income households (<80% AMI) only       0.3          127037.49           5.43          4.33              9.54             6.68         93905.5       69969.52         23935.98         58893.98        43761.63          15132.36            281460.95           257524.97          108914781.39                        857.34
+# Policy analysis
+
+- Sample: 1,054,210 households; 281,461 in groups above 6% and 164,186 above 10%.
+- Priority tracts (high-burden clusters): 175 tracts, 177,342 households.
+- Serving the same number of households, the rule that reaches the most severely burdened households (excluding the benchmark) is **Lowest median income**: 62,574 (38.1% of the city's), versus 58,894 for the clusters and 62,998 for the benchmark.
+- A 20% cost cut for every household in the priority tracts lowers their burden from 5.43% to 4.34% and moves 16,454 households below 6% (9,934 below 10%), saving about $606 per household per year.
+- The same cut limited to the 127,037 low-income households there moves 15,269 below 6% and lowers their burden from 9.54% to 7.63%.
+
+_Counts use LEAD household-group averages, so they approximate how many households cross each line._
 
 ===== 09_web_data =====
 Community areas: 77; tracts matched: 764
@@ -329,4 +406,4 @@ Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/web/t
 ===== 07_report =====
 Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/RESULTS.md
 
-Run finished 2026-11-14 19:58 UTC, status=0
+Run finished 2026-11-14 23:11 UTC, status=0

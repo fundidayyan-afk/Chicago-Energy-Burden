@@ -1,0 +1,7 @@
+,"Main (queen, ACS 2018-22)",A. KNN-6 weights,B. Reliable ACS only (n=541),C. ACS 2020-24 (n=755),stable across specs
+ln(median household income),-2.2158*** (0.3063),-2.3035*** (0.2941),-2.0564*** (0.2395),-2.3441*** (0.3449),yes
+% Black,0.0115* (0.0048),0.0100* (0.0047),0.0132** (0.0039),0.0132** (0.0051),yes
+% Hispanic,0.0003 (0.0053),-0.0014 (0.0052),0.0029 (0.0046),0.0049 (0.0055),NO: sign changes
+% housing built before 1950,-0.0081 (0.0057),-0.0082 (0.0054),-0.0180*** (0.0053),-0.0059 (0.0063),"sign stable, significance changes"
+% renter-occupied,0.0083 (0.0075),0.0092 (0.0072),0.0142* (0.0069),0.0112 (0.0082),"sign stable, significance changes"
+% units in 5+ unit buildings,-0.0343*** (0.0056),-0.0353*** (0.0053),-0.0373*** (0.0044),-0.0342*** (0.0061),yes

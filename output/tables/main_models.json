@@ -1,0 +1,108 @@
+{
+  "burden_pct": {
+    "outcome": "burden_pct",
+    "model": "durbin",
+    "label": "Energy burden (%)",
+    "xvars": [
+      "ln_income",
+      "pct_black",
+      "pct_hispanic",
+      "pct_pre1950",
+      "pct_renter",
+      "pct_multifam5"
+    ]
+  },
+  "ln_avg_energy_cost": {
+    "outcome": "ln_avg_energy_cost",
+    "model": "durbin",
+    "label": "ln(average energy cost)",
+    "xvars": [
+      "ln_income",
+      "pct_black",
+      "pct_hispanic",
+      "pct_pre1950",
+      "pct_renter",
+      "pct_multifam5"
+    ]
+  },
+  "elec_burden_pct": {
+    "outcome": "elec_burden_pct",
+    "model": "durbin",
+    "label": "Electricity burden (%)",
+    "xvars": [
+      "ln_income",
+      "pct_black",
+      "pct_hispanic",
+      "pct_pre1950",
+      "pct_renter",
+      "pct_multifam5"
+    ]
+  },
+  "ln_avg_elec_cost": {
+    "outcome": "ln_avg_elec_cost",
+    "model": "durbin",
+    "label": "ln(average electricity cost)",
+    "xvars": [
+      "ln_income",
+      "pct_black",
+      "pct_hispanic",
+      "pct_pre1950",
+      "pct_renter",
+      "pct_multifam5"
+    ]
+  },
+  "gas_burden_pct": {
+    "outcome": "gas_burden_pct",
+    "model": "durbin",
+    "label": "Gas burden (%)",
+    "xvars": [
+      "ln_income",
+      "pct_black",
+      "pct_hispanic",
+      "pct_pre1950",
+      "pct_renter",
+      "pct_multifam5"
+    ]
+  },
+  "ln_avg_gas_cost": {
+    "outcome": "ln_avg_gas_cost",
+    "model": "durbin",
+    "label": "ln(average gas cost)",
+    "xvars": [
+      "ln_income",
+      "pct_black",
+      "pct_hispanic",
+      "pct_pre1950",
+      "pct_renter",
+      "pct_multifam5"
+    ]
+  },
+  "elec_burden_pct_heat": {
+    "outcome": "elec_burden_pct",
+    "model": "durbin",
+    "label": "Electricity burden (%), heating fuel control",
+    "xvars": [
+      "ln_income",
+      "pct_black",
+      "pct_hispanic",
+      "pct_pre1950",
+      "pct_renter",
+      "pct_multifam5",
+      "pct_elec_heat"
+    ]
+  },
+  "gas_burden_pct_heat": {
+    "outcome": "gas_burden_pct",
+    "model": "durbin",
+    "label": "Gas burden (%), heating fuel control",
+    "xvars": [
+      "ln_income",
+      "pct_black",
+      "pct_hispanic",
+      "pct_pre1950",
+      "pct_renter",
+      "pct_multifam5",
+      "pct_elec_heat"
+    ]
+  }
+}
