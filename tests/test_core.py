@@ -118,3 +118,37 @@ def test_valid_unit_scaling_and_no_data_cohorts():
     # Last cohort has no valid income data and is dropped (200 households).
     assert t.attrs["households_dropped_no_income_data"] == 200
     assert t.loc["17031010200", "households"] == 200
+
+
+def test_bin_midpoints():
+    from ceb.robustness import bin_midpoint
+    assert bin_midpoint("Estimate!!Total:!!Charged for electricity:!!Less than $50") == 25
+    assert bin_midpoint("Estimate!!Total:!!Charged for electricity:!!$50 to $99") == 75
+    assert bin_midpoint("Estimate!!Total:!!Charged for electricity:!!$250 or more") == 312.5
+    assert bin_midpoint("Estimate!!Total:!!$1,000 to $1,499") == 1250
+    assert bin_midpoint("Estimate!!Total:!!Electricity included in rent") is None
+    assert bin_midpoint("Estimate!!Total:") is None
+
+
+def test_acs_burden_and_agreement():
+    from ceb.robustness import acs_burden, agreement
+    labels = {"B25132_001E": "Estimate!!Total:", "B25132_004E": "Estimate!!Total:!!Less than $50",
+              "B25132_005E": "Estimate!!Total:!!$50 to $99",
+              "B25133_001E": "Estimate!!Total:", "B25133_004E": "Estimate!!Total:!!$25 to $49"}
+    util = pd.DataFrame({"GEOID": ["1", "2"], "B25132_001E": [10, 10], "B25132_004E": [10, 0],
+                         "B25132_005E": [0, 10], "B25133_001E": [5, 5], "B25133_004E": [5, 5]})
+    inc = pd.DataFrame({"GEOID": ["1", "2"], "med_hh_income": [12_000, 24_000]})
+    out = acs_burden(util, labels, inc).set_index("GEOID")
+    assert out.loc["1", "acs_annual_cost"] == pytest.approx(12 * (25 + 37.5))
+    assert out.loc["2", "acs_burden_pct"] == pytest.approx(100 * 12 * (75 + 37.5) / 24_000)
+    assert agreement(pd.Series([1, 2, 3, 4, 5.0]), pd.Series([2, 4, 6, 8, 10.0]))["spearman"] == pytest.approx(1)
+
+
+def test_fractional_logit_runs():
+    from ceb.robustness import fractional_logit
+    rng = np.random.default_rng(0)
+    df = pd.DataFrame(rng.normal(size=(300, 2)), columns=["a", "b"])
+    df["share"] = 1 / (1 + np.exp(-(0.5 * df["a"] - 0.2)))
+    out = fractional_logit(df, "share", ["a", "b"]).set_index("term")
+    assert out.loc["a", "coef"] == pytest.approx(0.5, abs=0.05)
+    assert out.loc["a", "ame"] > 0

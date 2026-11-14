@@ -116,6 +116,43 @@ def _census_get(url, params, key, tries=3):
     raise RuntimeError("Census API did not return data after several tries; see messages above.")
 
 
+UTILITY_TABLES = {"B25132": "electricity", "B25133": "gas"}   # monthly cost, binned
+
+
+def download_acs_utility(year=config.ACS_YEAR):
+    """ACS monthly electricity and gas cost tables, plus their official labels.
+
+    Used only to build an independent burden measure that cross-checks LEAD.
+    """
+    import json
+
+    dest = config.RAW / f"acs5_{year}_utility_tracts.csv"
+    labels_dest = config.RAW / f"acs5_{year}_utility_labels.json"
+    if dest.exists() and labels_dest.exists():
+        print(f"  cached  {dest.name}")
+        return dest
+    key = os.environ.get("CENSUS_API_KEY")
+    url = config.ACS_API.format(year=year)
+    labels, frames = {}, []
+    for table in UTILITY_TABLES:
+        meta = _census_get(f"{url}/groups/{table}.json", {}, key)
+        labels.update({k: v["label"] for k, v in meta["variables"].items() if k.endswith("E")})
+        parts = []
+        for county in config.COUNTY_FIPS:
+            rows = _census_get(url, {"get": f"group({table})", "for": "tract:*",
+                                     "in": f"state:{config.STATE_FIPS} county:{county}"}, key)
+            df = pd.DataFrame(rows[1:], columns=rows[0])
+            df["GEOID"] = df["state"] + df["county"] + df["tract"]
+            keep = ["GEOID"] + [c for c in df.columns if c.startswith(table) and c.endswith("E")]
+            parts.append(df[keep])
+        frames.append(pd.concat(parts).set_index("GEOID"))
+    out = pd.concat(frames, axis=1).reset_index()
+    out.to_csv(dest, index=False)
+    labels_dest.write_text(json.dumps(labels, indent=1))
+    print(f"  saved   {dest.name} ({len(out)} tracts)")
+    return dest
+
+
 def download_acs(year=config.ACS_YEAR):
     """Pull ACS 5-year tract estimates and MOEs for the counties in config."""
     dest = config.RAW / f"acs5_{year}_tracts.csv"

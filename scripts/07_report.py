@@ -109,5 +109,43 @@ if __name__ == "__main__":
             parts += ["| " + " | ".join(" " for _ in row) + " |", "|" + "---|" * len(row),
                       "| " + " | ".join(f"![{f.stem}](figures/{f.name})" for f in row) + " |", ""]
 
+    rob = sorted(t.glob("robustness_*.csv"))
+    rob = [f for f in rob if f.stem != "robustness_long"]
+    if rob:
+        parts += ["## 6. Robustness checks", "",
+                  "Each column changes one thing relative to the main spatial error model. "
+                  "Coefficient (standard error); * p<0.05, ** p<0.01, *** p<0.001.", ""]
+        notes = read(t / "robustness_notes.md")
+        if notes:
+            parts += [notes.replace("# Robustness checks", "").strip(), ""]
+        for f in rob:
+            name = {"robustness_burden_pct": "Energy burden (%)",
+                    "robustness_ln_avg_energy_cost": "ln(average energy cost)"}.get(f.stem, f.stem)
+            parts += [f"**{name}**", "", pd.read_csv(f, index_col=0).fillna("").to_markdown(), ""]
+        thr = t / "threshold_models.csv"
+        if thr.exists():
+            d = pd.read_csv(thr)
+            d = d[d["model"].str.startswith("Fractional") & (d["term"] != "CONSTANT")]
+            d["cell"] = d.apply(lambda r: f"{r.ame:.4f}{'***' if r.p < .001 else '**' if r.p < .01 else '*' if r.p < .05 else ''} ({r.ame_se:.4f})", axis=1)
+            w = d.pivot(index="label", columns="model", values="cell")
+            w.columns = [c.replace("Fractional logit: share_high", "Share above 6%")
+                          .replace("Fractional logit: share_severe", "Share above 10%") for c in w.columns]
+            parts += ["**Share of households above the 6% and 10% lines** (fractional logit, average "
+                      "marginal effects; shares are lower bounds, see method notes)", "", w.to_markdown(), ""]
+        val = read(t / "validation.json")
+        if val:
+            v = json.loads(val)
+            if "error" in v:
+                parts += [f"**Independent ACS burden check:** skipped ({v['error']})", ""]
+            else:
+                parts += ["**Independent ACS burden check** (LEAD vs. ACS utility-cost tables)", "",
+                          "| Measure | Pearson r | Spearman rho | Top-20% overlap | n |", "|---|---|---|---|---|",
+                          *[f"| {k.replace('_', ' ')} | {v[k]['pearson']:.2f} | {v[k]['spearman']:.2f} | "
+                            f"{v[k]['top_quintile_overlap']:.0%} | {v[k]['n']} |" for k in ("burden", "annual_cost")],
+                          "", f"_{v['note']}_", ""]
+                im = img("validation_scatter.png", "LEAD vs ACS")
+                if im:
+                    parts += [im, ""]
+
     OUT.write_text("\n".join(parts) + "\n")
     print(f"Wrote {OUT}")
