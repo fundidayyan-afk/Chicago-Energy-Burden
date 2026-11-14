@@ -1,7 +1,9 @@
 # Sample construction log
 
 - Tracts with >= 50% of land area in Chicago: 782
-- LEAD households dropped for zero/negative cohort income: 150419
+- LEAD households dropped for zero/negative cohort income: 182
+- LEAD households dropped because their cohort has no valid income data: 35,787
+- LEAD households kept: 1,064,942
 - no LEAD record: 3  
   `17031381700, 17031980000, 17031980100`
 - fewer than 100 households: 3  

@@ -1,26 +1,26 @@
 {
   "queen": {
-    "I": 0.8313629783278355,
+    "I": 0.8258252351933568,
     "expected_I": -0.001303780964797914,
-    "z": 40.23373841747149,
+    "z": 40.20679905598584,
     "p_sim": 0.0001
   },
   "knn": {
-    "I": 0.8312169470958619,
+    "I": 0.8239378685769034,
     "expected_I": -0.001303780964797914,
-    "z": 41.98063177122905,
+    "z": 41.60103627682426,
     "p_sim": 0.0001
   },
-  "lisa_fdr_cutoff": 0.025000000000000005,
+  "lisa_fdr_cutoff": 0.024804687500000002,
   "lisa_counts_fdr": {
-    "Not significant": 384,
-    "Low-Low": 205,
-    "High-High": 177,
-    "Low-High": 2
+    "Not significant": 387,
+    "Low-Low": 203,
+    "High-High": 175,
+    "Low-High": 3
   },
   "lisa_counts_raw_p05": {
-    "Low-Low": 250,
-    "High-High": 205,
-    "Low-High": 2
+    "Low-Low": 246,
+    "High-High": 206,
+    "Low-High": 3
   }
 }

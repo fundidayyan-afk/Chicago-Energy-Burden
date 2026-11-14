@@ -1,8 +1,8 @@
-Run started 2026-11-14 16:56 UTC, commit f4a5cdb
+Run started 2026-11-14 17:01 UTC, commit b75c274
 
 ===== unit tests =====
-.........                                                                [100%]
-9 passed in 1.67s
+..........                                                               [100%]
+10 passed in 2.17s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
@@ -21,28 +21,24 @@ Done.
   result = _collection_extract(result, geom_type, keep_geom_type_warning)
 Chicago tracts (>= 50% of land in city): 782
 LEAD file: IL AMI Census Tracts 2022.csv
-LEAD rows: 923,097; columns: ['STATE', 'FIP', 'AMI150', 'TEN-YBL6', 'TEN-BLD', 'TEN-HFL', 'UNITS', 'FREQUENCY', 'HINCP*UNITS', 'ELEP*UNITS', 'GASP*UNITS', 'FULP*UNITS', 'HINCP UNITS', 'ELEP UNITS', 'GASP UNITS', 'FULP UNITS', 'TEN', 'WHITE ALONE HISPANIC OR LATINO', 'WHITE ALONE NOT HISPANIC OR LATINO', 'BLACK OR AFRICAN AMERICAN ALONE', 'AMERICAN INDIAN AND ALASKA NATIVE ALONE', 'ASIAN ALONE', 'NATIVE HAWAIIAN AND OTHER PACIFIC ISLANDER ALONE', 'SOME OTHER RACE ALONE', 'TWO OR MORE RACES', 'LESS THAN HIGH SCHOOL', 'HIGH SCHOOL', 'ASSOCIATES OR SOME COLLEGE', 'BACHELORS OR HIGHER']
-LEAD column mapping used: {'tract': 'FIP', 'income_bracket': 'AMI150', 'units': 'UNITS', 'income': 'HINCP*UNITS', 'elec': 'ELEP*UNITS', 'gas': 'GASP*UNITS', 'other_fuel': 'FULP*UNITS'}
-LEAD by income bracket (all Illinois rows):
-                  rows    households  rows_nonpos_income  households_nonpos_income  min_income_total  median_energy_total
+LEAD rows (Illinois): 923,097
+LEAD rows in Chicago tracts: 247,281
+LEAD column mapping used: {'tract': 'FIP', 'income_bracket': 'AMI150', 'units': 'UNITS', 'income': 'HINCP*UNITS', 'elec': 'ELEP*UNITS', 'gas': 'GASP*UNITS', 'other_fuel': 'FULP*UNITS', 'income_valid_units': 'HINCP UNITS', 'elec_valid_units': 'ELEP UNITS', 'gas_valid_units': 'GASP UNITS', 'other_fuel_valid_units': 'FULP UNITS'}
+LEAD by income bracket (Chicago tracts):
+                 rows     households  rows_nonpos_income  households_nonpos_income  min_income_total  median_energy_total
 income_bracket                                                                                                           
-0-30%           143168  6.791587e+05               35891              43974.195097    -146459.282360           738.816304
-100-150%        163165  1.025632e+06               29912              20301.648741          0.000000          1059.232175
-150%+           140929  1.420581e+06               28657              22497.048623      -1394.425022          1473.639925
-30-60%          165591  8.236929e+05               33525              29883.543984          0.000000           857.782940
-60-80%          157218  5.255653e+05               32374              18019.378185          0.000000           640.697187
-80-100%         153026  4.941308e+05               31107              15743.413072          0.000000           659.457794
-First 5 LEAD rows:
-   STATE          FIP AMI150       TEN-YBL6           TEN-BLD            TEN-HFL      UNITS  FREQUENCY    HINCP*UNITS     ELEP*UNITS    GASP*UNITS    FULP*UNITS  HINCP UNITS  ELEP UNITS  GASP UNITS  FULP UNITS  TEN  WHITE ALONE HISPANIC OR LATINO  WHITE ALONE NOT HISPANIC OR LATINO  BLACK OR AFRICAN AMERICAN ALONE  AMERICAN INDIAN AND ALASKA NATIVE ALONE  ASIAN ALONE  NATIVE HAWAIIAN AND OTHER PACIFIC ISLANDER ALONE  SOME OTHER RACE ALONE  TWO OR MORE RACES  LESS THAN HIGH SCHOOL  HIGH SCHOOL  ASSOCIATES OR SOME COLLEGE  BACHELORS OR HIGHER
-0     17  17001000100  0-30%  OWNER 1940-59  OWNER 1 DETACHED  OWNER BOTTLED GAS   0.400698   2.340000    5652.965980     439.644186    727.943707  2.960118e-11     0.369398    0.369398    0.369398    0.369398  OWN                             0.0                            0.251864                         0.000000                                      0.0     0.000000                                               0.0                    0.0           0.000000               0.087161     0.019209                    0.000000             0.000000
-1     17  17001000100  0-30%  OWNER 1940-59  OWNER 1 DETACHED  OWNER ELECTRICITY   5.168723   2.885000   67066.387236    9303.359326   5470.383885  1.082882e-09     5.150723    5.150723    4.774418    5.150723  OWN                             0.0                            7.279595                         0.000000                                      0.0     0.000000                                               0.0                    0.0           0.000000               0.701425     0.063717                    0.445127             0.000000
-2     17  17001000100  0-30%  OWNER 1940-59  OWNER 1 DETACHED        OWNER OTHER   0.242487   0.000000       0.000000       0.000000      0.000000  0.000000e+00     0.000000    0.000000    0.000000    0.000000  OWN                             0.0                            0.000000                         0.000000                                      0.0     0.000000                                               0.0                    0.0           0.000000               0.000000     0.000000                    0.000000             0.000000
-3     17  17001000100  0-30%  OWNER 1940-59  OWNER 1 DETACHED  OWNER UTILITY GAS  47.401861  23.741778  490019.862540  105802.344580  45457.116471  1.407219e+03    46.211961   46.211961   46.112761   46.211961  OWN                             0.0                           55.355914                         0.086212                                      0.0     0.000000                                               0.0                    0.0           0.438775              10.145461     9.329085                   21.398529             2.914613
-4     17  17001000100  0-30%  OWNER 1960-79  OWNER 1 DETACHED  OWNER BOTTLED GAS   1.364656   3.810000   22978.373147    1931.882611    147.858153  1.010191e-10     1.258565    1.258565    1.097665    1.258565  OWN                             0.0                            0.658345                         0.000000                                      0.0     0.306018                                               0.0                    0.0           0.113989               0.000415     0.158215                    0.026164             0.000000
+0-30%           28317  210638.878336                  63                182.593269    -159312.111952          2983.350158
+100-150%        36072  186195.045622                   0                  0.000000          0.440017          1949.171217
+150%+           31164  281504.186831                   0                  0.000000          1.867831          3312.787155
+30-60%          33136  190117.385499                   0                  0.000000          0.007539          1977.314588
+60-80%          31630  102617.040399                   0                  0.000000          0.019624          1202.365061
+80-100%         30660   94052.463448                   0                  0.000000          0.854604          1268.447141
 # Sample construction log
 
 - Tracts with >= 50% of land area in Chicago: 782
-- LEAD households dropped for zero/negative cohort income: 150419
+- LEAD households dropped for zero/negative cohort income: 182
+- LEAD households dropped because their cohort has no valid income data: 35,787
+- LEAD households kept: 1,064,942
 - no LEAD record: 3  
   `17031381700, 17031980000, 17031980100`
 - fewer than 100 households: 3  
@@ -62,8 +58,8 @@ Saved /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/data/process
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
  There are 207 disconnected components.
   W.__init__(self, neighbors, id_order=ids, **kwargs)
-Global Moran's I (queen): 0.831, p = 0.0001
-Global Moran's I (knn): 0.831, p = 0.0001
+Global Moran's I (queen): 0.826, p = 0.0001
+Global Moran's I (knn): 0.824, p = 0.0001
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
  There are 2 disconnected components.
  There is 1 island with id: 371.
@@ -72,11 +68,11 @@ Global Moran's I (knn): 0.831, p = 0.0001
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
  There are 207 disconnected components.
   W.__init__(self, neighbors, id_order=ids, **kwargs)
-LISA clusters (FDR): {'Not significant': 384, 'Low-Low': 205, 'High-High': 177, 'Low-High': 2}
+LISA clusters (FDR): {'Not significant': 387, 'Low-Low': 203, 'High-High': 175, 'Low-High': 3}
 Saved maps to output/figures and tables to output/tables
 
 ===== 04_preliminary_summary =====
-The LEAD 2022 data cover 782 census tracts that lie mostly within Chicago; after removing tracts with too few households or missing covariates, 768 tracts and about 1,054,210 households remain. Across all of them, households spend 2.1% of income on energy. Tract burden ranges from 0.5% to 10.9% (10th to 90th percentile: 1.1% to 5.8%), and the household-weighted median tract burden is 2.3%. For households below 80% of area median income, the citywide burden is 6.8% and the median tract burden is 7.0%, compared with ACEEE's 2024 estimate of 7.2% for low-income Chicago households (2.2% for all households). About 26% of households live in income groups whose average burden is above 6%, and 15% above 10%. Burden is strongly clustered in space (global Moran's I = 0.83, p < 0.0001), with 177 tracts in significant high-burden clusters after a false discovery rate correction.
+The LEAD 2022 data cover 782 census tracts that lie mostly within Chicago; after removing tracts with too few households or missing covariates, 768 tracts and about 1,054,210 households remain. Across all of them, households spend 2.2% of income on energy. Tract burden ranges from 0.5% to 10.7% (10th to 90th percentile: 1.1% to 6.1%), and the household-weighted median tract burden is 2.4%. For households below 80% of area median income, the citywide burden is 7.0% and the median tract burden is 7.2%, compared with ACEEE's 2024 estimate of 7.2% for low-income Chicago households (2.2% for all households). About 27% of households live in income groups whose average burden is above 6%, and 16% above 10%. Burden is strongly clustered in space (global Moran's I = 0.83, p < 0.0001), with 175 tracts in significant high-burden clusters after a false discovery rate correction.
 
 Check before using: ACEEE reports medians of household burdens, while the citywide figure above is total spending over total income. The two should be close in direction and size but are not the same statistic, so describe the comparison as a sanity check, not a match.
 
@@ -110,30 +106,30 @@ ML_Error
 ML_Lag
 
             outcome  model       aic    logll  moran_resid_I
-        burden_pct    OLS  1782.664 -884.332          0.363
-        burden_pct  error  1559.107 -772.554         -0.040
-        burden_pct durbin  1534.874 -753.437         -0.033
-ln_avg_energy_cost    OLS -1093.569  553.785          0.269
-ln_avg_energy_cost  error -1241.052  627.526         -0.022
-ln_avg_energy_cost durbin -1292.261  660.131         -0.009
+        burden_pct    OLS  1855.024 -920.512          0.363
+        burden_pct  error  1631.771 -808.886         -0.036
+        burden_pct durbin  1611.812 -791.906         -0.030
+ln_avg_energy_cost    OLS -1122.300  568.150          0.277
+ln_avg_energy_cost  error -1276.240  645.120         -0.019
+ln_avg_energy_cost durbin -1321.341  674.670         -0.009
 
 Saved tables to output/tables
 
 ===== 06_mgwr =====
 {
-  "aicc": 340.8188289459112,
-  "r2": 0.943041719138374,
-  "adj_r2": 0.9297317469808077,
+  "aicc": 338.846677965372,
+  "r2": 0.943293474271004,
+  "adj_r2": 0.9299897113461167,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
-    "pct_black": 253.0,
-    "pct_hispanic": 122.0,
-    "pct_pre1950": 157.0,
-    "pct_renter": 766.0,
+    "pct_black": 205.0,
+    "pct_hispanic": 98.0,
+    "pct_pre1950": 210.0,
+    "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.02500063262891,
+  "max_local_condition_number": 9.282588149367193,
   "share_tracts_cn_over_30": 0.0
 }
 Saved MGWR tables and maps
@@ -141,4 +137,4 @@ Saved MGWR tables and maps
 ===== 07_report =====
 Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/RESULTS.md
 
-Run finished 2026-11-14 16:59 UTC, status=0
+Run finished 2026-11-14 17:06 UTC, status=0

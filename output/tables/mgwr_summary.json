@@ -1,16 +1,16 @@
 {
-  "aicc": 340.8188289459112,
-  "r2": 0.943041719138374,
-  "adj_r2": 0.9297317469808077,
+  "aicc": 338.846677965372,
+  "r2": 0.943293474271004,
+  "adj_r2": 0.9299897113461167,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
-    "pct_black": 253.0,
-    "pct_hispanic": 122.0,
-    "pct_pre1950": 157.0,
-    "pct_renter": 766.0,
+    "pct_black": 205.0,
+    "pct_hispanic": 98.0,
+    "pct_pre1950": 210.0,
+    "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.02500063262891,
+  "max_local_condition_number": 9.282588149367193,
   "share_tracts_cn_over_30": 0.0
 }
