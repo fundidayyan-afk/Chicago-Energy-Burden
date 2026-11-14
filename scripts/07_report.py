@@ -114,6 +114,11 @@ if __name__ == "__main__":
                 f = t / f"impacts_{spec}.csv"
                 if f.exists():
                     parts += [f"**{info['label']}** ({info['model']} model)", "", impacts_table(f), ""]
+        for name, alt in [("effects_burden_costs.png", "Effects on burden and bills"),
+                          ("effects_fuels.png", "Effects on electricity and gas burden")]:
+            im = img(name, alt)
+            if im:
+                parts += [im, ""]
         if coefs_path.exists():
             coefs = pd.read_csv(coefs_path)
             parts += ["### All coefficients", "", "Coefficient (standard error); * p<0.05, ** p<0.01, *** p<0.001.", ""]
@@ -126,6 +131,7 @@ if __name__ == "__main__":
         if comp.exists():
             parts += ["**Model comparison**", "", pd.read_csv(comp).round(3).to_markdown(index=False), ""]
 
+    mc = t / "model_comparison_burden.csv"
     sec = read(t / "mgwr_summary.json")
     if sec:
         s = json.loads(sec)
@@ -134,6 +140,9 @@ if __name__ == "__main__":
                   f"max local condition number = {s['max_local_condition_number']:.1f}", "",
                   "| Variable | Bandwidth (neighbors) |", "|---|---|",
                   *[f"| {k} | {v:.0f} |" for k, v in s["bandwidths"].items()], ""]
+        if mc.exists():
+            parts += ["**Model comparison, energy burden** (all on the original scale; lower AIC is better)", "",
+                      pd.read_csv(mc).round(3).fillna("").to_markdown(index=False), ""]
         figs = sorted(config.FIGURES.glob("mgwr_*.png"))
         for i in range(0, len(figs), 3):
             row = figs[i:i + 3]
@@ -192,6 +201,13 @@ if __name__ == "__main__":
                       *[f"| {r.budget} | {r.rule} | {r.tracts} | {r.households:,.0f} | {r.hh_above_10:,.0f} | "
                         f"{r.share_of_city_above_10:.1%} | {r.hh_above_6:,.0f} | {r.share_of_city_above_6:.1%} | "
                         f"{r.overlap_with_clusters} |" for r in d.itertuples()], ""]
+        im = img("map_priority.png", "Priority tracts")
+        if im:
+            parts += [im, ""]
+        pa = t / "priority_by_community_area.csv"
+        if pa.exists():
+            parts += ["**Priority tracts by community area (top 15)**", "",
+                      pd.read_csv(pa).head(15).to_markdown(index=False), ""]
         sc = t / "policy_scenarios.csv"
         if sc.exists():
             d = pd.read_csv(sc)
@@ -202,6 +218,25 @@ if __name__ == "__main__":
                         f"{r.burden_after:.2f}% | {r.li_burden_before:.2f}% / {r.li_burden_after:.2f}% | "
                         f"{r.above_6_before:,.0f} / {r.above_6_after:,.0f} | {r.above_10_before:,.0f} / "
                         f"{r.above_10_after:,.0f} | ${r.annual_savings_per_served_hh:,.0f} |" for r in d.itertuples()], ""]
+
+    bm = read(t / "benchmarking_summary.json")
+    if bm:
+        b = json.loads(bm)
+        parts += ["## 8. Context: large multifamily buildings (Chicago Energy Benchmarking)", ""]
+        if "error" in b:
+            parts += [f"_Skipped: {b['error']}_", ""]
+        else:
+            parts += [f"{b['multifamily_buildings']:,} benchmarked multifamily buildings ({b['data_year']}). "
+                      f"Median site energy use intensity: {b['median_site_eui_high_burden_clusters']:.1f} kBtu/sq ft "
+                      f"in high-burden cluster tracts ({b['buildings_in_high_burden_clusters']} buildings) vs. "
+                      f"{b['median_site_eui_elsewhere']:.1f} elsewhere (Mann-Whitney p = {b['mann_whitney_p']:.3f}).", ""]
+            for f, title in [("benchmarking_by_cluster.csv", "By burden cluster"),
+                             ("benchmarking_by_era.csv", "By year built")]:
+                if (t / f).exists():
+                    parts += [f"**{title}**", "", pd.read_csv(t / f).round(1).to_markdown(index=False), ""]
+            parts += [f"_{b['note']}_", ""]
+    parts += ["## Notebooks", "", "Step-by-step notebooks with live outputs are in "
+              "[`notebooks/`](../notebooks/).", ""]
 
     OUT.write_text("\n".join(parts) + "\n")
     print(f"Wrote {OUT}")

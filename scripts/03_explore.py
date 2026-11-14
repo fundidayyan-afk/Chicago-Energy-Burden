@@ -5,7 +5,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
-from ceb import config, explore, geo
+from ceb import config, explore, geo, plots
 
 CLUSTER_COLORS = {"High-High": "#b2182b", "Low-Low": "#2166ac", "High-Low": "#f4a582",
                   "Low-High": "#92c5de", "Not significant": "#e8e8e8"}
@@ -15,13 +15,13 @@ if __name__ == "__main__":
     gdf = gdf[gdf["in_main_sample"].astype(bool)].reset_index(drop=True)
 
     # Choropleth of burden
-    fig, ax = plt.subplots(figsize=(7, 9))
-    gdf.plot(column="burden_pct", scheme="Quantiles", k=5, cmap="OrRd", legend=True,
+    fig, ax = plots.base_map(gdf)
+    gdf.plot(column="burden_pct", scheme="Quantiles", k=5, cmap="OrRd", legend=True, zorder=2,
              legend_kwds={"title": "Energy burden (%)", "loc": "lower left"},
              edgecolor="white", linewidth=0.2, ax=ax)
-    ax.set_axis_off()
+    plots.add_context(ax)
     ax.set_title("Household energy burden by census tract, Chicago (LEAD 2022)")
-    fig.savefig(config.FIGURES / "map_burden.png", dpi=200, bbox_inches="tight")
+    plots.save(fig, "map_burden.png")
 
     results = {}
     for kind in ("queen", "knn"):
@@ -40,13 +40,13 @@ if __name__ == "__main__":
 
     order = list(CLUSTER_COLORS)
     gdf["cluster"] = gdf["cluster"].astype("category").cat.set_categories(order)
-    fig, ax = plt.subplots(figsize=(7, 9))
-    gdf.plot(column="cluster", categorical=True, cmap=ListedColormap(list(CLUSTER_COLORS.values())),
+    fig, ax = plots.base_map(gdf)
+    gdf.plot(column="cluster", categorical=True, zorder=2, cmap=ListedColormap(list(CLUSTER_COLORS.values())),
              legend=True, legend_kwds={"loc": "lower left", "title": "LISA cluster (FDR 5%)"},
              edgecolor="white", linewidth=0.2, ax=ax)
-    ax.set_axis_off()
+    plots.add_context(ax)
     ax.set_title("Energy burden clusters, Chicago census tracts")
-    fig.savefig(config.FIGURES / "map_lisa.png", dpi=200, bbox_inches="tight")
+    plots.save(fig, "map_lisa.png")
 
     gdf[["GEOID", "burden_pct", "local_I", "p_sim", "quadrant", "cluster"]].to_csv(
         config.TABLES / "lisa_clusters.csv", index=False)

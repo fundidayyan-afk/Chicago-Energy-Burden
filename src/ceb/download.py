@@ -138,6 +138,57 @@ def download_basemap():
     print("  note    no community area file; map labels will be limited")
 
 
+BENCHMARK_KNOWN_ID = "xq83-jr8c"   # "Chicago Energy Benchmarking" (all years)
+
+
+def download_benchmarking():
+    """City of Chicago Energy Benchmarking data (buildings of roughly 50,000+ sq ft).
+
+    Finds the dataset through the open-data catalog so a renamed or re-issued
+    dataset is still found, and records which one was used.
+    """
+    import json
+
+    dest = config.RAW / "chicago_energy_benchmarking.csv"
+    meta = config.RAW / "chicago_energy_benchmarking_source.json"
+    if dest.exists():
+        print(f"  cached  {dest.name}")
+        return dest
+    ids = []
+    try:
+        r = requests.get("https://api.us.socrata.com/api/catalog/v1",
+                         params={"domains": "data.cityofchicago.org", "q": "energy benchmarking", "limit": 20},
+                         timeout=60)
+        r.raise_for_status()
+        for res in r.json().get("results", []):
+            rs = res.get("resource", {})
+            name = rs.get("name", "")
+            if "benchmark" in name.lower() and rs.get("type") == "dataset":
+                ids.append((rs.get("id"), name, rs.get("data_updated_at", "")))
+        print("  catalog " + "; ".join(f"{i} = {n}" for i, n, _ in ids))
+    except Exception as e:
+        print(f"  note    catalog search failed ({e}); trying the known id")
+    # Prefer the all-years dataset, then the known id, then anything else found
+    ids.sort(key=lambda t: (("all" not in t[1].lower()) and ("chicago energy benchmarking" != t[1].lower().strip()),
+                            t[0] != BENCHMARK_KNOWN_ID))
+    candidates = [i for i, _, _ in ids] + [BENCHMARK_KNOWN_ID]
+    for ds in dict.fromkeys(candidates):
+        try:
+            r = requests.get(f"https://data.cityofchicago.org/resource/{ds}.csv", params={"$limit": 500000},
+                             timeout=300)
+            r.raise_for_status()
+            if r.text.count("\n") > 100:
+                dest.write_text(r.text)
+                meta.write_text(json.dumps({"dataset_id": ds,
+                                            "name": next((n for i, n, _ in ids if i == ds), "unknown"),
+                                            "url": f"https://data.cityofchicago.org/d/{ds}"}, indent=1))
+                print(f"  saved   {dest.name} from dataset {ds} ({r.text.count(chr(10)):,} rows)")
+                return dest
+        except Exception as e:
+            print(f"  note    benchmarking dataset {ds} not fetched: {e}")
+    print("  note    no benchmarking data downloaded")
+
+
 UTILITY_TABLES = {"B25132": "electricity", "B25133": "gas"}   # monthly cost, binned
 
 

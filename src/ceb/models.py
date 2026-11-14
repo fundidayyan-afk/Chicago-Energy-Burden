@@ -161,7 +161,8 @@ def mgwr_fit(gdf, outcome, xvars=XVARS):
     pts = gdf.geometry.to_crs(config.PROJECTED_CRS).representative_point()
     coords = np.column_stack([pts.x, pts.y])
     y, X = design(gdf, outcome, xvars)
-    y = (y - y.mean()) / y.std()
+    y_sd = float(y.std())
+    y = (y - y.mean()) / y_sd
     X = (X - X.mean(axis=0)) / X.std(axis=0)
 
     selector = Sel_BW(coords, y, X, multi=True)
@@ -178,7 +179,14 @@ def mgwr_fit(gdf, outcome, xvars=XVARS):
         "bandwidths": dict(zip(terms, np.ravel(selector.bw[0]).tolist())),
         "max_local_condition_number": float(np.max(local_cn)),
         "share_tracts_cn_over_30": float(np.mean(np.max(local_cn, axis=1) > 30)),
+        # Fit on the outcome's original scale, comparable with OLS and the spatial models:
+        # standardizing y by its SD shifts the log-likelihood by n * ln(SD).
+        "n": int(res.n), "effective_parameters": float(res.tr_S),
+        "logll_original_scale": float(res.llf - res.n * np.log(y_sd)),
+        "aic_original_scale": float(-2 * (res.llf - res.n * np.log(y_sd)) + 2 * (res.tr_S + 1)),
+        "share_tracts_significant": {t: float((filtered[t] != 0).mean()) for t in terms},
     }
+    params["residual"] = np.ravel(res.resid_response) * y_sd
     return params, sig, summary
 
 

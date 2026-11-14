@@ -64,7 +64,7 @@ jobs:
           fi
           steps="01_download 02_build 03_explore 04_preliminary_summary 05_models"
           if [ "${{ inputs.skip_mgwr }}" != "true" ]; then steps="$steps 06_mgwr"; fi
-          steps="$steps 08_robustness 10_policy 09_web_data 07_report"
+          steps="$steps 08_robustness 10_policy 11_figures 12_benchmarking 09_web_data 07_report"
           status=0
           for s in $steps; do
             echo "" >> $log; echo "===== $s =====" | tee -a $log
@@ -76,6 +76,15 @@ jobs:
               break
             fi
           done
+          if [ "$status" = "0" ]; then
+            echo "" >> $log; echo "===== notebooks =====" | tee -a $log
+            python scripts/build_notebooks.py 2>&1 | tee -a $log
+            for nb in notebooks/*.ipynb; do
+              if ! jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=900 "$nb" 2>&1 | tee -a $log; then
+                echo "FAILED at notebook $nb" | tee -a $log; status=1
+              fi
+            done
+          fi
           echo "" >> $log; echo "Run finished $(date -u '+%Y-%m-%d %H:%M UTC'), status=$status" >> $log
           echo "status=$status" >> $GITHUB_OUTPUT
 
@@ -84,7 +93,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
-          git add -f output/ data/processed/ 2>/dev/null || true
+          git add -f output/ data/processed/ notebooks/ 2>/dev/null || true
           if git diff --cached --quiet; then echo "Nothing new to commit"; exit 0; fi
           git commit -m "Pipeline results for ${GITHUB_SHA::7} (status ${{ steps.pipeline.outputs.status }})"
           git pull --rebase -X theirs origin main

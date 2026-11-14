@@ -20,4 +20,8 @@ if __name__ == "__main__":
         download.download_basemap()           # web map background
     except Exception as e:
         print(f"  note    basemap layers not downloaded ({e})")
+    try:
+        download.download_benchmarking()      # supporting context on large buildings
+    except Exception as e:
+        print(f"  note    benchmarking data not downloaded ({e})")
     print("Done.")

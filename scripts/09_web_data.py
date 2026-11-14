@@ -13,16 +13,8 @@ import pandas as pd
 from shapely.geometry import box
 
 from ceb import config
+from ceb.plots import tidy_name
 
-
-def tidy_name(s):
-    """'MCKINLEY PARK' -> 'McKinley Park'; 'OHARE' -> "O'Hare"."""
-    t = s.strip().title()
-    t = " ".join(("Mc" + w[2:].title()) if w.startswith("Mc") and len(w) > 2 else w for w in t.split())
-    return {"Ohare": "O'Hare", "Loop": "The Loop"}.get(t, t)
-
-WEB = config.OUTPUT / "web"
-WEB.mkdir(parents=True, exist_ok=True)
 
 FIELDS = {  # column in the build -> short key in the web file, decimals
     "burden_pct": ("burden", 2),
@@ -45,9 +37,11 @@ if __name__ == "__main__":
 
     lisa = pd.read_csv(config.TABLES / "lisa_clusters.csv", dtype={"GEOID": str})
     sample = sample.merge(lisa[["GEOID", "cluster"]], on="GEOID", how="left")
-    mg = config.TABLES / "mgwr_coefficients.csv"
+    mg = config.TABLES / "mgwr_significant.csv"
+    MG_VARS = ["ln_income", "pct_black", "pct_hispanic", "pct_pre1950", "pct_renter", "pct_multifam5"]
     if mg.exists():
-        m = pd.read_csv(mg, dtype={"GEOID": str})[["GEOID", "ln_income"]].rename(columns={"ln_income": "mgwr_income"})
+        m = pd.read_csv(mg, dtype={"GEOID": str})
+        m = m[["GEOID"] + [v for v in MG_VARS if v in m.columns]].rename(columns={v: f"mg_{v}" for v in MG_VARS})
         sample = sample.merge(m, on="GEOID", how="left")
 
     out = gpd.GeoDataFrame({"id": sample["GEOID"],
@@ -56,8 +50,8 @@ if __name__ == "__main__":
     for col, (key, nd) in FIELDS.items():
         out[key] = sample[col].round(nd)
     out["cluster"] = sample["cluster"].fillna("Not significant")
-    if "mgwr_income" in sample:
-        out["mgwr_income"] = sample["mgwr_income"].round(3)
+    for c in [c for c in sample.columns if c.startswith("mg_")]:
+        out[c] = sample[c].round(3)     # standardized local coefficient; blank = not significant
 
     # Community area for each tract (by the tract's interior point) and basemap layers
     out = out.to_crs(config.PROJECTED_CRS)
@@ -118,6 +112,8 @@ if __name__ == "__main__":
         "hotspot_tracts": int((sample["cluster"] == "High-High").sum()),
         "coldspot_tracts": int((sample["cluster"] == "Low-Low").sum()),
         "data_year": "LEAD 2022, ACS 2018-2022",
+        "mgwr_bandwidths": json.loads((config.TABLES / "mgwr_summary.json").read_text()).get("bandwidths", {})
+        if (config.TABLES / "mgwr_summary.json").exists() else {},
         "updated": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"),
     }
     (WEB / "summary.json").write_text(json.dumps(summary, indent=2))
