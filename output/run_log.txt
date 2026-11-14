@@ -1,4 +1,4 @@
-Run started 2026-11-14 23:42 UTC, commit c1fb5ec
+Run started 2026-11-14 23:48 UTC, commit fd04597
 
 ===== unit tests =====
 .................                                                        [100%]
@@ -8,23 +8,22 @@ tests/test_core.py::test_fractional_logit_runs
     return self._fit_irls(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-17 passed, 1 warning in 1.96s
+17 passed, 1 warning in 2.28s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
-  get     https://data.openei.org/files/6219/IL-2022-LEAD-data.zip
-  get     https://data.openei.org/files/6219/Data%20Dictionary%202022.xlsx
+  cached  IL-2022-LEAD-data.zip
+  cached  LEAD_data_dictionary_2022.xlsx
 TIGER/Line tracts and places
-  get     https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_17_tract.zip
-  get     https://www2.census.gov/geo/tiger/TIGER2022/PLACE/tl_2022_17_place.zip
+  cached  tl_2022_17_tract.zip
+  cached  tl_2022_17_place.zip
 ACS 5-year, 2018-2022 and 2020-2024
-  saved   acs5_2022_tracts.csv (1551 tracts)
-  saved   acs5_2024_tracts.csv (1551 tracts)
-  saved   acs5_2022_utility_tracts.csv (1551 tracts)
-  get     https://www2.census.gov/geo/tiger/TIGER2022/AREAWATER/tl_2022_17031_areawater.zip
-  saved   chicago_community_areas.geojson (77 areas) from https://data.cityofchicago.org/resource/igwz-8jzy.geojson?$limit=200
-  catalog xq83-jr8c = Chicago Energy Benchmarking; g5i5-yz37 = Chicago Energy Benchmarking - Covered Buildings
-  saved   chicago_energy_benchmarking.csv from dataset xq83-jr8c (28,334 rows)
+  cached  acs5_2022_tracts.csv
+  cached  acs5_2024_tracts.csv
+  cached  acs5_2022_utility_tracts.csv
+  cached  tl_2022_17031_areawater.zip
+  cached  chicago_community_areas.geojson
+  cached  chicago_energy_benchmarking.csv
 Done.
 
 ===== 02_build =====
@@ -527,7 +526,7 @@ wrote notebooks/06_policy_and_context.ipynb
 [NbConvertApp] Writing 848165 bytes to notebooks/02_exploratory_spatial_analysis.ipynb
 [NbConvertApp] Converting notebook notebooks/03_regression_models.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
-[NbConvertApp] Writing 368163 bytes to notebooks/03_regression_models.ipynb
+[NbConvertApp] Writing 368903 bytes to notebooks/03_regression_models.ipynb
 [NbConvertApp] Converting notebook notebooks/04_mgwr.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
 [NbConvertApp] Writing 1890442 bytes to notebooks/04_mgwr.ipynb
@@ -536,6 +535,6 @@ wrote notebooks/06_policy_and_context.ipynb
 [NbConvertApp] Writing 31884 bytes to notebooks/05_robustness.ipynb
 [NbConvertApp] Converting notebook notebooks/06_policy_and_context.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
-[NbConvertApp] Writing 495611 bytes to notebooks/06_policy_and_context.ipynb
+[NbConvertApp] Writing 486699 bytes to notebooks/06_policy_and_context.ipynb
 
-Run finished 2026-11-14 23:46 UTC, status=0
+Run finished 2026-11-14 23:54 UTC, status=0

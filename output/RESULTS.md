@@ -1,6 +1,6 @@
 # Results: Household Energy Burden Across Chicago
 
-_Generated 2026-11-14 23:45 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
+_Generated 2026-11-14 23:53 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
 
 ## 1. Sample
 
