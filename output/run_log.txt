@@ -1,19 +1,26 @@
-Run started 2026-11-14 17:01 UTC, commit b75c274
+Run started 2026-11-14 17:37 UTC, commit 4900ac6
 
 ===== unit tests =====
-..........                                                               [100%]
-10 passed in 2.17s
+.............                                                            [100%]
+=============================== warnings summary ===============================
+tests/test_core.py::test_fractional_logit_runs
+  /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/statsmodels/genmod/generalized_linear_model.py:1269: PerfectSeparationWarning: Perfect separation or prediction detected, parameter may not be identified
+    return self._fit_irls(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+13 passed, 1 warning in 1.95s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
-  cached  IL-2022-LEAD-data.zip
-  cached  LEAD_data_dictionary_2022.xlsx
+  get     https://data.openei.org/files/6219/IL-2022-LEAD-data.zip
+  get     https://data.openei.org/files/6219/Data%20Dictionary%202022.xlsx
 TIGER/Line tracts and places
-  cached  tl_2022_17_tract.zip
-  cached  tl_2022_17_place.zip
+  get     https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_17_tract.zip
+  get     https://www2.census.gov/geo/tiger/TIGER2022/PLACE/tl_2022_17_place.zip
 ACS 5-year, 2018-2022 and 2020-2024
-  cached  acs5_2022_tracts.csv
-  cached  acs5_2024_tracts.csv
+  saved   acs5_2022_tracts.csv (1551 tracts)
+  saved   acs5_2024_tracts.csv (1551 tracts)
+  saved   acs5_2022_utility_tracts.csv (1551 tracts)
 Done.
 
 ===== 02_build =====
@@ -118,8 +125,8 @@ Saved tables to output/tables
 ===== 06_mgwr =====
 {
   "aicc": 338.846677965372,
-  "r2": 0.943293474271004,
-  "adj_r2": 0.9299897113461167,
+  "r2": 0.9432934742710039,
+  "adj_r2": 0.9299897113461166,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
@@ -129,12 +136,178 @@ Saved tables to output/tables
     "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.282588149367193,
+  "max_local_condition_number": 9.282588149367191,
   "share_tracts_cn_over_30": 0.0
 }
 Saved MGWR tables and maps
 
+===== 08_robustness =====
+Main sample: 768 tracts
+ACS 2020-2024 sample: 755 tracts
+Reliable-ACS sample: 541 tracts
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 1 tract(s) with no touching neighbor ['17043840000']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 207 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 10 disconnected components.
+ There are 6 islands with ids: 140, 141, 198, 199, 209, 489.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 6 tract(s) with no touching neighbor ['17031740200', '17031740400', '17031670200', '17031670400', '17031560800', '17031301701']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 145 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/util.py:1343: UserWarning: The weights matrix is not fully connected: 
+ There are 6 disconnected components.
+  return W(neighbors, weights, id_order=w.id_order, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 363.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 1 tract(s) with no touching neighbor ['17043840000']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 205 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+
+Energy burden (%)
+spec                         Main (queen, ACS 2018-22)     A. KNN-6 weights B. Reliable ACS only (n=541) C. ACS 2020-24 (n=755) stable across specs
+ln(median household income)        -1.8113*** (0.0928)  -1.8246*** (0.0943)          -1.7842*** (0.1106)    -1.5029*** (0.1000)                 yes
+% Black                             0.0135*** (0.0021)   0.0142*** (0.0020)           0.0145*** (0.0022)     0.0195*** (0.0022)                 yes
+% Hispanic                           0.0071** (0.0024)    0.0072** (0.0024)             0.0067* (0.0028)     0.0126*** (0.0025)                 yes
+% housing built before 1950          0.0058** (0.0018)   0.0061*** (0.0018)             0.0044* (0.0022)       0.0040* (0.0020)                 yes
+% renter-occupied                     -0.0013 (0.0022)     -0.0009 (0.0022)             -0.0013 (0.0028)       -0.0022 (0.0023)                 yes
+% units in 5+ unit buildings       -0.0212*** (0.0020)  -0.0212*** (0.0019)          -0.0228*** (0.0022)    -0.0201*** (0.0021)                 yes
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 1 tract(s) with no touching neighbor ['17043840000']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 207 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 10 disconnected components.
+ There are 6 islands with ids: 140, 141, 198, 199, 209, 489.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 6 tract(s) with no touching neighbor ['17031740200', '17031740400', '17031670200', '17031670400', '17031560800', '17031301701']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 145 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/util.py:1343: UserWarning: The weights matrix is not fully connected: 
+ There are 6 disconnected components.
+  return W(neighbors, weights, id_order=w.id_order, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 363.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 1 tract(s) with no touching neighbor ['17043840000']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 205 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+
+ln(average energy cost)
+spec                         Main (queen, ACS 2018-22)     A. KNN-6 weights B. Reliable ACS only (n=541) C. ACS 2020-24 (n=755) stable across specs
+ln(median household income)         0.0996*** (0.0140)   0.0956*** (0.0140)           0.0904*** (0.0174)     0.1036*** (0.0140)                 yes
+% Black                             0.0028*** (0.0003)   0.0028*** (0.0003)           0.0028*** (0.0003)     0.0028*** (0.0003)                 yes
+% Hispanic                          0.0019*** (0.0004)   0.0019*** (0.0004)           0.0015*** (0.0004)     0.0019*** (0.0003)                 yes
+% housing built before 1950         0.0013*** (0.0003)   0.0012*** (0.0003)           0.0016*** (0.0004)     0.0011*** (0.0003)                 yes
+% renter-occupied                  -0.0020*** (0.0003)  -0.0020*** (0.0003)          -0.0022*** (0.0004)    -0.0012*** (0.0003)                 yes
+% units in 5+ unit buildings       -0.0078*** (0.0003)  -0.0077*** (0.0003)          -0.0083*** (0.0003)    -0.0081*** (0.0003)                 yes
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 1 tract(s) with no touching neighbor ['17043840000']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 207 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 1 tract(s) with no touching neighbor ['17043840000']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 207 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+
+Threshold outcomes (fractional logit, average marginal effects)
+                         model          term     ame  ame_se      p
+  Fractional logit: share_high      CONSTANT     NaN     NaN 0.0000
+  Fractional logit: share_high     ln_income -0.2129  0.0104 0.0000
+  Fractional logit: share_high     pct_black  0.0016  0.0001 0.0000
+  Fractional logit: share_high  pct_hispanic  0.0014  0.0002 0.0000
+  Fractional logit: share_high   pct_pre1950  0.0001  0.0001 0.4557
+  Fractional logit: share_high    pct_renter -0.0003  0.0002 0.2150
+  Fractional logit: share_high pct_multifam5 -0.0020  0.0002 0.0000
+Fractional logit: share_severe      CONSTANT     NaN     NaN 0.0000
+Fractional logit: share_severe     ln_income -0.1351  0.0092 0.0000
+Fractional logit: share_severe     pct_black  0.0011  0.0001 0.0000
+Fractional logit: share_severe  pct_hispanic  0.0005  0.0002 0.0009
+Fractional logit: share_severe   pct_pre1950  0.0002  0.0001 0.2299
+Fractional logit: share_severe    pct_renter  0.0005  0.0002 0.0204
+Fractional logit: share_severe pct_multifam5 -0.0014  0.0002 0.0000
+
+ACS cost bins used (column: assumed monthly $):
+  B25132: Less than $50 -> 25, $50 to $99 -> 75, $100 to $149 -> 125, $150 to $199 -> 175, $200 to $249 -> 225, $250 or more -> 312
+  B25133: Less than $25 -> 12, $25 to $49 -> 38, $50 to $74 -> 62, $75 to $99 -> 88, $100 to $149 -> 125, $150 or more -> 188
+
+Validation: {
+  "burden": {
+    "n": 768,
+    "pearson": 0.8473900388757079,
+    "spearman": 0.918745724352899,
+    "top_quintile_overlap": 0.7012987012987013
+  },
+  "annual_cost": {
+    "n": 768,
+    "pearson": 0.8572405162859253,
+    "spearman": 0.8498965738450349,
+    "top_quintile_overlap": 0.6428571428571429
+  },
+  "lead_mean_burden": 3.301972249655805,
+  "acs_mean_burden": 5.0454251817304545,
+  "note": "ACS costs cover only households that pay electricity/gas bills directly and use bin midpoints (top bin x1.25); the denominator is median household income. Expect strong rank agreement, not equal levels."
+}
+# Robustness checks
+
+- Energy burden (%): 6 of 6 coefficients keep the same sign and significance in every specification.
+- ln(average energy cost): 6 of 6 coefficients keep the same sign and significance in every specification.
+
 ===== 07_report =====
 Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/RESULTS.md
 
-Run finished 2026-11-14 17:06 UTC, status=0
+Run finished 2026-11-14 17:40 UTC, status=0

@@ -1,0 +1,17 @@
+{
+  "burden": {
+    "n": 768,
+    "pearson": 0.8473900388757079,
+    "spearman": 0.918745724352899,
+    "top_quintile_overlap": 0.7012987012987013
+  },
+  "annual_cost": {
+    "n": 768,
+    "pearson": 0.8572405162859253,
+    "spearman": 0.8498965738450349,
+    "top_quintile_overlap": 0.6428571428571429
+  },
+  "lead_mean_burden": 3.301972249655805,
+  "acs_mean_burden": 5.0454251817304545,
+  "note": "ACS costs cover only households that pay electricity/gas bills directly and use bin midpoints (top bin x1.25); the denominator is median household income. Expect strong rank agreement, not equal levels."
+}

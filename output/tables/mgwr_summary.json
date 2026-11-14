@@ -1,7 +1,7 @@
 {
   "aicc": 338.846677965372,
-  "r2": 0.943293474271004,
-  "adj_r2": 0.9299897113461167,
+  "r2": 0.9432934742710039,
+  "adj_r2": 0.9299897113461166,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
@@ -11,6 +11,6 @@
     "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.282588149367193,
+  "max_local_condition_number": 9.282588149367191,
   "share_tracts_cn_over_30": 0.0
 }

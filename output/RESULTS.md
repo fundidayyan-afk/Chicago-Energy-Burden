@@ -1,6 +1,6 @@
 # Results: Household Energy Burden Across Chicago
 
-_Generated 2026-11-14 17:06 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
+_Generated 2026-11-14 17:40 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
 
 ## 1. Sample
 
@@ -137,4 +137,55 @@ MGWR adjusted R² = 0.930; AICc = 338.8; max local condition number = 9.3
 |   |   |   |
 |---|---|---|
 | ![mgwr_pct_multifam5](figures/mgwr_pct_multifam5.png) | ![mgwr_pct_pre1950](figures/mgwr_pct_pre1950.png) | ![mgwr_pct_renter](figures/mgwr_pct_renter.png) |
+
+## 6. Robustness checks
+
+Each column changes one thing relative to the main spatial error model. Coefficient (standard error); * p<0.05, ** p<0.01, *** p<0.001.
+
+- Energy burden (%): 6 of 6 coefficients keep the same sign and significance in every specification.
+- ln(average energy cost): 6 of 6 coefficients keep the same sign and significance in every specification.
+
+**Energy burden (%)**
+
+|                              | Main (queen, ACS 2018-22)   | A. KNN-6 weights    | B. Reliable ACS only (n=541)   | C. ACS 2020-24 (n=755)   | stable across specs   |
+|:-----------------------------|:----------------------------|:--------------------|:-------------------------------|:-------------------------|:----------------------|
+| ln(median household income)  | -1.8113*** (0.0928)         | -1.8246*** (0.0943) | -1.7842*** (0.1106)            | -1.5029*** (0.1000)      | yes                   |
+| % Black                      | 0.0135*** (0.0021)          | 0.0142*** (0.0020)  | 0.0145*** (0.0022)             | 0.0195*** (0.0022)       | yes                   |
+| % Hispanic                   | 0.0071** (0.0024)           | 0.0072** (0.0024)   | 0.0067* (0.0028)               | 0.0126*** (0.0025)       | yes                   |
+| % housing built before 1950  | 0.0058** (0.0018)           | 0.0061*** (0.0018)  | 0.0044* (0.0022)               | 0.0040* (0.0020)         | yes                   |
+| % renter-occupied            | -0.0013 (0.0022)            | -0.0009 (0.0022)    | -0.0013 (0.0028)               | -0.0022 (0.0023)         | yes                   |
+| % units in 5+ unit buildings | -0.0212*** (0.0020)         | -0.0212*** (0.0019) | -0.0228*** (0.0022)            | -0.0201*** (0.0021)      | yes                   |
+
+**ln(average energy cost)**
+
+|                              | Main (queen, ACS 2018-22)   | A. KNN-6 weights    | B. Reliable ACS only (n=541)   | C. ACS 2020-24 (n=755)   | stable across specs   |
+|:-----------------------------|:----------------------------|:--------------------|:-------------------------------|:-------------------------|:----------------------|
+| ln(median household income)  | 0.0996*** (0.0140)          | 0.0956*** (0.0140)  | 0.0904*** (0.0174)             | 0.1036*** (0.0140)       | yes                   |
+| % Black                      | 0.0028*** (0.0003)          | 0.0028*** (0.0003)  | 0.0028*** (0.0003)             | 0.0028*** (0.0003)       | yes                   |
+| % Hispanic                   | 0.0019*** (0.0004)          | 0.0019*** (0.0004)  | 0.0015*** (0.0004)             | 0.0019*** (0.0003)       | yes                   |
+| % housing built before 1950  | 0.0013*** (0.0003)          | 0.0012*** (0.0003)  | 0.0016*** (0.0004)             | 0.0011*** (0.0003)       | yes                   |
+| % renter-occupied            | -0.0020*** (0.0003)         | -0.0020*** (0.0003) | -0.0022*** (0.0004)            | -0.0012*** (0.0003)      | yes                   |
+| % units in 5+ unit buildings | -0.0078*** (0.0003)         | -0.0077*** (0.0003) | -0.0083*** (0.0003)            | -0.0081*** (0.0003)      | yes                   |
+
+**Share of households above the 6% and 10% lines** (fractional logit, average marginal effects; shares are lower bounds, see method notes)
+
+| label                        | Share above 6%      | Share above 10%     |
+|:-----------------------------|:--------------------|:--------------------|
+| % Black                      | 0.0016*** (0.0001)  | 0.0011*** (0.0001)  |
+| % Hispanic                   | 0.0014*** (0.0002)  | 0.0005*** (0.0002)  |
+| % housing built before 1950  | 0.0001 (0.0001)     | 0.0002 (0.0001)     |
+| % renter-occupied            | -0.0003 (0.0002)    | 0.0005* (0.0002)    |
+| % units in 5+ unit buildings | -0.0020*** (0.0002) | -0.0014*** (0.0002) |
+| ln(median household income)  | -0.2129*** (0.0104) | -0.1351*** (0.0092) |
+
+**Independent ACS burden check** (LEAD vs. ACS utility-cost tables)
+
+| Measure | Pearson r | Spearman rho | Top-20% overlap | n |
+|---|---|---|---|---|
+| burden | 0.85 | 0.92 | 70% | 768 |
+| annual cost | 0.86 | 0.85 | 64% | 768 |
+
+_ACS costs cover only households that pay electricity/gas bills directly and use bin midpoints (top bin x1.25); the denominator is median household income. Expect strong rank agreement, not equal levels._
+
+![LEAD vs ACS](figures/validation_scatter.png)
 
