@@ -39,6 +39,15 @@ TIGER_PLACE_URL = (
     f"https://www2.census.gov/geo/tiger/TIGER{TIGER_YEAR}/PLACE/tl_{TIGER_YEAR}_{STATE_FIPS}_place.zip"
 )
 ACS_API = "https://api.census.gov/data/{year}/acs/acs5"
+# Basemap layers for the web map (drawn by us, no tile service needed)
+TIGER_WATER_URL = (
+    f"https://www2.census.gov/geo/tiger/TIGER{TIGER_YEAR}/AREAWATER/tl_{TIGER_YEAR}_{STATE_FIPS}031_areawater.zip"
+)
+COMMUNITY_AREA_URLS = [
+    "https://data.cityofchicago.org/resource/igwz-8jzy.geojson?$limit=200",
+    "https://data.cityofchicago.org/api/geospatial/igwz-8jzy?method=export&format=GeoJSON",
+    "https://data.cityofchicago.org/api/geospatial/cauq-8yn6?method=export&format=GeoJSON",
+]
 
 # Analysis settings ---------------------------------------------------------
 BURDEN_HIGH = 6.0                 # percent of income: "high" energy burden

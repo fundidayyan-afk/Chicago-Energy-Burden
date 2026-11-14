@@ -16,4 +16,8 @@ if __name__ == "__main__":
         download.download_acs_utility(2022)   # for the independent burden check
     except Exception as e:
         print(f"  note    ACS utility tables not downloaded ({e}); validation will be skipped")
+    try:
+        download.download_basemap()           # web map background
+    except Exception as e:
+        print(f"  note    basemap layers not downloaded ({e})")
     print("Done.")

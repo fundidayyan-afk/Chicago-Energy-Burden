@@ -116,6 +116,28 @@ def _census_get(url, params, key, tries=3):
     raise RuntimeError("Census API did not return data after several tries; see messages above.")
 
 
+def download_basemap():
+    """Lake Michigan / river shapes (Cook County water) and Chicago community areas."""
+    z = fetch(config.TIGER_WATER_URL, config.RAW / config.TIGER_WATER_URL.rsplit("/", 1)[-1])
+    unzip(z, config.RAW / f"tiger_water_{config.TIGER_YEAR}")
+    dest = config.RAW / "chicago_community_areas.geojson"
+    if dest.exists():
+        print(f"  cached  {dest.name}")
+        return
+    for url in config.COMMUNITY_AREA_URLS:
+        try:
+            r = requests.get(url, timeout=120)
+            r.raise_for_status()
+            js = r.json()
+            if js.get("features"):
+                dest.write_text(r.text)
+                print(f"  saved   {dest.name} ({len(js['features'])} areas) from {url}")
+                return
+        except Exception as e:
+            print(f"  note    community areas not fetched from {url}: {e}")
+    print("  note    no community area file; map labels will be limited")
+
+
 UTILITY_TABLES = {"B25132": "electricity", "B25133": "gas"}   # monthly cost, binned
 
 
