@@ -1,4 +1,4 @@
-Run started 2026-11-14 18:46 UTC, commit b0aa55a
+Run started 2026-11-14 19:46 UTC, commit d16c4ca
 
 ===== unit tests =====
 .............                                                            [100%]
@@ -8,19 +8,21 @@ tests/test_core.py::test_fractional_logit_runs
     return self._fit_irls(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-13 passed, 1 warning in 1.74s
+13 passed, 1 warning in 2.30s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
-  cached  IL-2022-LEAD-data.zip
-  cached  LEAD_data_dictionary_2022.xlsx
+  get     https://data.openei.org/files/6219/IL-2022-LEAD-data.zip
+  get     https://data.openei.org/files/6219/Data%20Dictionary%202022.xlsx
 TIGER/Line tracts and places
-  cached  tl_2022_17_tract.zip
-  cached  tl_2022_17_place.zip
+  get     https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_17_tract.zip
+  get     https://www2.census.gov/geo/tiger/TIGER2022/PLACE/tl_2022_17_place.zip
 ACS 5-year, 2018-2022 and 2020-2024
-  cached  acs5_2022_tracts.csv
-  cached  acs5_2024_tracts.csv
-  cached  acs5_2022_utility_tracts.csv
+  saved   acs5_2022_tracts.csv (1551 tracts)
+  saved   acs5_2024_tracts.csv (1551 tracts)
+  saved   acs5_2022_utility_tracts.csv (1551 tracts)
+  get     https://www2.census.gov/geo/tiger/TIGER2022/AREAWATER/tl_2022_17031_areawater.zip
+  saved   chicago_community_areas.geojson (77 areas) from https://data.cityofchicago.org/resource/igwz-8jzy.geojson?$limit=200
 Done.
 
 ===== 02_build =====
@@ -125,8 +127,8 @@ Saved tables to output/tables
 ===== 06_mgwr =====
 {
   "aicc": 338.846677965372,
-  "r2": 0.9432934742710039,
-  "adj_r2": 0.9299897113461166,
+  "r2": 0.943293474271004,
+  "adj_r2": 0.9299897113461167,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
@@ -136,7 +138,7 @@ Saved tables to output/tables
     "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.282588149367191,
+  "max_local_condition_number": 9.282588149367193,
   "share_tracts_cn_over_30": 0.0
 }
 Saved MGWR tables and maps
@@ -294,7 +296,7 @@ Validation: {
   },
   "annual_cost": {
     "n": 768,
-    "pearson": 0.8572405162859253,
+    "pearson": 0.8572405162859255,
     "spearman": 0.8498965738450349,
     "top_quintile_overlap": 0.6428571428571429
   },
@@ -308,6 +310,8 @@ Validation: {
 - ln(average energy cost): 6 of 6 coefficients keep the same sign and significance in every specification.
 
 ===== 09_web_data =====
+Community areas: 77; tracts matched: 764
+Water layers: ['water']
 {
   "tracts": 768,
   "households": 1054210,
@@ -320,9 +324,9 @@ Validation: {
   "data_year": "LEAD 2022, ACS 2018-2022",
   "updated": "2026-11-14"
 }
-Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/web/tracts.geojson (0.46 MB)
+Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/web/tracts.geojson (0.48 MB)
 
 ===== 07_report =====
 Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/RESULTS.md
 
-Run finished 2026-11-14 18:49 UTC, status=0
+Run finished 2026-11-14 19:51 UTC, status=0
