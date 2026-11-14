@@ -21,8 +21,21 @@ def img(name, alt):
     return f"![{alt}](figures/{name})" if p.exists() else None
 
 
+def stars(p):
+    return "***" if p < 0.001 else "**" if p < 0.01 else "*" if p < 0.05 else ""
+
+
+def impacts_table(path):
+    """Main-model effects: direct / indirect / total, estimate (SE or 95% CI)."""
+    d = pd.read_csv(path)
+    d["cell"] = d.apply(lambda r: f"{r.estimate:.4f}{stars(r.p)} [{r.ci_low:.4f}, {r.ci_high:.4f}]", axis=1)
+    wide = d.pivot_table(index="label", columns="effect", values="cell", aggfunc="first", sort=False)
+    return wide[[c for c in ("direct", "indirect", "total") if c in wide.columns]].to_markdown()
+
+
 def coef_table(coefs, outcome):
-    sub = coefs[coefs["model"].str.endswith(f": {outcome}")].copy()
+    sub = coefs[coefs["spec"] == outcome].copy() if "spec" in coefs else \
+        coefs[coefs["model"].str.endswith(f": {outcome}")].copy()
     if sub.empty:
         return None
 
@@ -80,20 +93,38 @@ if __name__ == "__main__":
                       pd.read_csv(vif, index_col=0).round(2).to_markdown(), ""]
         if sec:
             parts += [sec.replace("# Model selection", "").replace("## ", "### ").strip(), ""]
+        lr = t / "lr_tests.csv"
+        if lr.exists():
+            d = pd.read_csv(lr)
+            parts += ["**Choosing the main model** (likelihood ratio tests nesting the spatial error and lag "
+                      "models inside the spatial Durbin model)", "",
+                      "| Outcome | LM tests chose | Common factor LR (p) | Durbin vs lag LR (p) | AIC error / lag / Durbin | Main model |",
+                      "|---|---|---|---|---|---|",
+                      *[f"| {r.spec} | {r.lm_choice} | {r.lr_common_factor:.1f} ({r.p_common_factor:.4f}) | "
+                        f"{r.lr_durbin_vs_lag:.1f} ({r.p_durbin_vs_lag:.4f}) | {r.aic_error:.1f} / {r.aic_lag:.1f} / "
+                        f"{r.aic_durbin:.1f} | **{r.choice}** |" for r in d.itertuples()], ""]
+        mm = t / "main_models.json"
+        if mm.exists():
+            main = json.loads(mm.read_text())
+            parts += ["### Effects from the main models", "",
+                      "Estimate with 95% interval; * p<0.05, ** p<0.01, *** p<0.001. For a spatial Durbin or lag "
+                      "model, direct = effect of a tract's own characteristics, indirect = spillover from "
+                      "neighbors, total = both. For a spatial error model, the coefficients are the effects.", ""]
+            for spec, info in main.items():
+                f = t / f"impacts_{spec}.csv"
+                if f.exists():
+                    parts += [f"**{info['label']}** ({info['model']} model)", "", impacts_table(f), ""]
         if coefs_path.exists():
             coefs = pd.read_csv(coefs_path)
-            for outcome, label in [("burden_pct", "Energy burden (%)"),
-                                   ("ln_avg_energy_cost", "ln(average energy cost)")]:
-                tbl = coef_table(coefs, outcome)
+            parts += ["### All coefficients", "", "Coefficient (standard error); * p<0.05, ** p<0.01, *** p<0.001.", ""]
+            specs = coefs["spec"].unique() if "spec" in coefs else ["burden_pct", "ln_avg_energy_cost"]
+            for spec in specs:
+                tbl = coef_table(coefs, spec)
                 if tbl:
-                    parts += [f"**{label}**: coefficient (standard error); * p<0.05, ** p<0.01, *** p<0.001", "",
-                              tbl, ""]
+                    parts += [f"**{spec}**", "", tbl, ""]
         comp = t / "model_comparison.csv"
         if comp.exists():
             parts += ["**Model comparison**", "", pd.read_csv(comp).round(3).to_markdown(index=False), ""]
-        for f in sorted(t.glob("lag_impacts_*.csv")):
-            parts += [f"**Spatial lag effects ({f.stem.replace('lag_impacts_', '')})**", "",
-                      pd.read_csv(f).round(4).to_markdown(index=False), ""]
 
     sec = read(t / "mgwr_summary.json")
     if sec:
@@ -120,7 +151,9 @@ if __name__ == "__main__":
             parts += [notes.replace("# Robustness checks", "").strip(), ""]
         for f in rob:
             name = {"robustness_burden_pct": "Energy burden (%)",
-                    "robustness_ln_avg_energy_cost": "ln(average energy cost)"}.get(f.stem, f.stem)
+                    "robustness_burden_pct_total": "Energy burden (%), total effects",
+                    "robustness_ln_avg_energy_cost": "ln(average energy cost)",
+                    "robustness_ln_avg_energy_cost_total": "ln(average energy cost), total effects"}.get(f.stem, f.stem)
             parts += [f"**{name}**", "", pd.read_csv(f, index_col=0).fillna("").to_markdown(), ""]
         thr = t / "threshold_models.csv"
         if thr.exists():
@@ -146,6 +179,29 @@ if __name__ == "__main__":
                 im = img("validation_scatter.png", "LEAD vs ACS")
                 if im:
                     parts += [im, ""]
+
+    pol = read(t / "policy_summary.md")
+    if pol:
+        parts += ["## 7. Policy analysis", "", pol.replace("# Policy analysis", "").strip(), ""]
+        tg = t / "policy_targeting.csv"
+        if tg.exists():
+            d = pd.read_csv(tg)
+            parts += ["**Targeting rules**", "",
+                      "| Budget | Rule | Tracts | Households | Above 10% | Share of city above 10% | Above 6% | Share of city above 6% | Overlap with clusters |",
+                      "|---|---|---|---|---|---|---|---|---|",
+                      *[f"| {r.budget} | {r.rule} | {r.tracts} | {r.households:,.0f} | {r.hh_above_10:,.0f} | "
+                        f"{r.share_of_city_above_10:.1%} | {r.hh_above_6:,.0f} | {r.share_of_city_above_6:.1%} | "
+                        f"{r.overlap_with_clusters} |" for r in d.itertuples()], ""]
+        sc = t / "policy_scenarios.csv"
+        if sc.exists():
+            d = pd.read_csv(sc)
+            parts += ["**Cost-cut scenarios in the priority tracts**", "",
+                      "| Who | Cut | Households served | Burden before / after | Low-income burden before / after | Above 6% before / after | Above 10% before / after | Savings per served household |",
+                      "|---|---|---|---|---|---|---|---|",
+                      *[f"| {r.who} | {r.cost_cut:.0%} | {r.households_served:,.0f} | {r.burden_before:.2f}% / "
+                        f"{r.burden_after:.2f}% | {r.li_burden_before:.2f}% / {r.li_burden_after:.2f}% | "
+                        f"{r.above_6_before:,.0f} / {r.above_6_after:,.0f} | {r.above_10_before:,.0f} / "
+                        f"{r.above_10_after:,.0f} | ${r.annual_savings_per_served_hh:,.0f} |" for r in d.itertuples()], ""]
 
     OUT.write_text("\n".join(parts) + "\n")
     print(f"Wrote {OUT}")

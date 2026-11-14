@@ -24,13 +24,30 @@ import pandas as pd
 from ceb import acs, config, geo, models, robustness
 
 OUTCOMES = {"burden_pct": "Energy burden (%)", "ln_avg_energy_cost": "ln(average energy cost)"}
-MAIN = "error"   # chosen by the LM tests in 05_models.py for both outcomes
+# Main model for each outcome, chosen by the LR tests in 05_models.py
+MAIN = {k: v["model"] for k, v in json.loads((config.TABLES / "main_models.json").read_text()).items()}
 
 
-def fit(gdf, outcome, weights="queen", kind=MAIN):
-    w = geo.weights(gdf, weights)
-    _, t = models.spatial_model(gdf, outcome, w, kind)
-    return t
+def effects(gdf, outcome, w, kind, xvars=models.XVARS):
+    """Marginal effects in a common format: one table per effect type.
+
+    Error model: the coefficients ('direct' only). Durbin or lag model: the
+    simulated direct and total effects, which are what the paper interprets.
+    """
+    m, t = models.spatial_model(gdf, outcome, w, kind, xvars)
+    if kind == "error":
+        return {"direct": t[t["term"].isin(xvars)][["term", "coef", "se", "p"]]}
+    imp = (models.durbin_impacts if kind == "durbin" else models.lag_impacts)(m, w, xvars)
+    out = {}
+    for eff in ("direct", "total"):
+        e = imp[imp["effect"] == eff]
+        se = e["se"] if "se" in e else (e["ci_high"] - e["ci_low"]) / (2 * 1.96)
+        out[eff] = pd.DataFrame({"term": e["term"], "coef": e["estimate"], "se": se, "p": e["p"]})
+    return out
+
+
+def fit(gdf, outcome, weights="queen"):
+    return effects(gdf, outcome, geo.weights(gdf, weights), MAIN[outcome])
 
 
 if __name__ == "__main__":
@@ -54,22 +71,26 @@ if __name__ == "__main__":
 
     all_long, notes = [], ["# Robustness checks", ""]
     for outcome, label in OUTCOMES.items():
-        specs = {
+        runs = {
             "Main (queen, ACS 2018-22)": fit(main, outcome),
             "A. KNN-6 weights": fit(main, outcome, "knn"),
             f"B. Reliable ACS only (n={len(reliable)})": fit(reliable, outcome),
         }
         if acs24 is not None:
-            specs[f"C. ACS 2020-24 (n={len(acs24)})"] = fit(acs24, outcome)
-        long, wide = robustness.compare(specs)
-        long.insert(0, "outcome", outcome)
-        all_long.append(long)
-        wide.index = [models.LABELS.get(i, i) for i in wide.index]
-        wide.to_csv(config.TABLES / f"robustness_{outcome}.csv")
-        print(f"\n{label}\n{wide.to_string()}")
-        n_stable = (wide["stable across specs"] == "yes").sum()
-        notes.append(f"- {label}: {n_stable} of {len(wide)} coefficients keep the same sign and "
-                     f"significance in every specification.")
+            runs[f"C. ACS 2020-24 (n={len(acs24)})"] = fit(acs24, outcome)
+        for eff in runs["Main (queen, ACS 2018-22)"]:
+            specs = {name: r[eff] for name, r in runs.items()}
+            long, wide = robustness.compare(specs)
+            long.insert(0, "effect", eff)
+            long.insert(0, "outcome", outcome)
+            all_long.append(long)
+            wide.index = [models.LABELS.get(i, i) for i in wide.index]
+            suffix = "" if eff == "direct" else f"_{eff}"
+            wide.to_csv(config.TABLES / f"robustness_{outcome}{suffix}.csv")
+            print(f"\n{label} ({MAIN[outcome]} model, {eff} effects)\n{wide.to_string()}")
+            n_stable = (wide["stable across specs"] == "yes").sum()
+            notes.append(f"- {label}, {eff} effects ({MAIN[outcome]} model): {n_stable} of {len(wide)} keep the "
+                         f"same sign and significance in every specification.")
     pd.concat(all_long).to_csv(config.TABLES / "robustness_long.csv", index=False)
 
     # D. Threshold outcomes
@@ -77,8 +98,10 @@ if __name__ == "__main__":
     for outcome in ("share_high", "share_severe"):
         fl = robustness.fractional_logit(main, outcome)
         thr.append(fl)
-        _, sp = models.spatial_model(main, outcome, geo.weights(main, "queen"), "error")
-        sp["model"] = f"Spatial error (linear): {outcome}"
+        kind = MAIN["burden_pct"]
+        eff = effects(main, outcome, geo.weights(main, "queen"), kind)
+        sp = eff.get("total", eff["direct"]).copy()
+        sp.insert(0, "model", f"Spatial {kind} (linear, {'total effects' if 'total' in eff else 'coefficients'}): {outcome}")
         thr.append(sp)
     thr = pd.concat(thr, ignore_index=True)
     thr["label"] = thr["term"].map(models.LABELS).fillna(thr["term"])

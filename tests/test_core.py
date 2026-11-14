@@ -152,3 +152,65 @@ def test_fractional_logit_runs():
     out = fractional_logit(df, "share", ["a", "b"]).set_index("term")
     assert out.loc["a", "coef"] == pytest.approx(0.5, abs=0.05)
     assert out.loc["a", "ame"] > 0
+
+
+def test_durbin_impacts_reduce_to_simple_cases():
+    import libpysal
+    from types import SimpleNamespace
+    from ceb.models import durbin_impacts
+    w = libpysal.weights.lat2W(6, 6)
+    w.transform = "r"
+    # rho = 0 and theta = 0: direct = beta, indirect = 0
+    m = SimpleNamespace(betas=np.array([1.0, 2.0, 0.0, 0.0]), vm=np.eye(4) * 1e-10)
+    imp = durbin_impacts(m, w, xvars=["x"], draws=200).set_index("effect")
+    assert imp.loc["direct", "estimate"] == pytest.approx(2.0)
+    assert imp.loc["indirect", "estimate"] == pytest.approx(0.0, abs=1e-9)
+    # rho = 0, theta = 1: total = beta + theta, direct = beta (W has zero diagonal)
+    m = SimpleNamespace(betas=np.array([1.0, 2.0, 1.0, 0.0]), vm=np.eye(4) * 1e-10)
+    imp = durbin_impacts(m, w, xvars=["x"], draws=200).set_index("effect")
+    assert imp.loc["total", "estimate"] == pytest.approx(3.0)
+    assert imp.loc["direct", "estimate"] == pytest.approx(2.0)
+    # rho = 0.5, theta = 0: total = beta / (1 - rho)
+    m = SimpleNamespace(betas=np.array([1.0, 2.0, 0.0, 0.5]), vm=np.eye(4) * 1e-10)
+    imp = durbin_impacts(m, w, xvars=["x"], draws=200).set_index("effect")
+    assert imp.loc["total", "estimate"] == pytest.approx(4.0)
+
+
+def test_lr_test():
+    from ceb.models import lr_test
+    stat, p = lr_test(-100.0, -110.0, 2)
+    assert stat == pytest.approx(20.0)
+    assert p == pytest.approx(np.exp(-10), rel=1e-6)
+
+
+def _toy_cohorts():
+    return pd.DataFrame({
+        "tract": ["A", "A", "B", "B"],
+        "units": [100, 100, 50, 150],
+        "income": [1_000_000, 10_000_000, 400_000, 9_000_000],
+        "energy": [80_000, 200_000, 44_000, 180_000],   # burdens: 8%, 2%, 11%, 2%
+        "low_income": [True, False, True, False],
+    }).assign(cohort_burden=lambda d: 100 * d["energy"] / d["income"])
+
+
+def test_policy_counts_and_scenario():
+    from ceb import policy
+    coh = _toy_cohorts()
+    c = policy.cohort_counts(coh)
+    assert c["hh_above_6"] == 150 and c["hh_above_10"] == 50
+    sc = policy.scenarios(coh, ["A", "B"], cuts=(0.30,)).set_index("who")
+    allhh = sc.loc["All households"]
+    # 8% -> 5.6% and 11% -> 7.7%: 100 drop below 6%, 50 drop below 10%
+    assert allhh["dropped_below_6"] == 100 and allhh["dropped_below_10"] == 50
+    assert allhh["annual_savings_total"] == pytest.approx(0.3 * 504_000)
+    li = sc.loc["Low-income households (<80% AMI) only"]
+    assert li["households_served"] == 150
+    assert li["annual_savings_total"] == pytest.approx(0.3 * 124_000)
+
+
+def test_policy_select_by_households():
+    from ceb import policy
+    tr = pd.DataFrame({"GEOID": ["A", "B", "C"], "households": [100, 200, 300], "inc": [3, 1, 2]})
+    assert policy.select(tr, "inc", True, n_tracts=2) == ["B", "C"]
+    assert policy.select(tr, "inc", True, n_households=250) == ["B", "C"]
+    assert policy.select(tr, "inc", True, n_households=150) == ["B"]

@@ -180,3 +180,87 @@ def mgwr_fit(gdf, outcome, xvars=XVARS):
         "share_tracts_cn_over_30": float(np.mean(np.max(local_cn, axis=1) > 30)),
     }
     return params, sig, summary
+
+
+# --- Choosing between spatial error, spatial lag, and spatial Durbin ------------
+
+def lr_test(ll_unrestricted, ll_restricted, df):
+    stat = 2 * (ll_unrestricted - ll_restricted)
+    return float(stat), float(stats.chi2.sf(stat, df))
+
+
+def select_spatial_model(gdf, outcome, w, xvars=XVARS, alpha=config.ALPHA):
+    """Likelihood ratio tests that nest the error and lag models inside the Durbin model.
+
+    Spatial error (SEM) is the Durbin model (SDM) with the common factor
+    restriction theta = -rho * beta; spatial lag (SAR) is the SDM with theta = 0.
+    Following Elhorst (2010) and LeSage & Pace (2009): if both restrictions
+    are rejected, the SDM is preferred; if only one is rejected, the other,
+    simpler model is kept. The common factor test is evaluated as a
+    likelihood ratio with k degrees of freedom (Burridge, 1981).
+    """
+    k = len(xvars)
+    fits = {kind: spatial_model(gdf, outcome, w, kind, xvars) for kind in ("error", "lag", "durbin")}
+    ll = {kind: fits[kind][0].logll for kind in fits}
+    cf_stat, cf_p = lr_test(ll["durbin"], ll["error"], k)
+    lag_stat, lag_p = lr_test(ll["durbin"], ll["lag"], k)
+    if cf_p < alpha and lag_p < alpha:
+        choice = "durbin"
+        why = (f"Both restrictions are rejected (common factor LR = {cf_stat:.1f}, p = {cf_p:.4f}; "
+               f"SDM vs lag LR = {lag_stat:.1f}, p = {lag_p:.4f}), so the spatial Durbin model is preferred.")
+    elif cf_p >= alpha and lag_p < alpha:
+        choice = "error"
+        why = (f"The common factor restriction is not rejected (LR = {cf_stat:.1f}, p = {cf_p:.4f}) while the lag "
+               f"restriction is (LR = {lag_stat:.1f}, p = {lag_p:.4f}), so the spatial error model is kept.")
+    elif lag_p >= alpha and cf_p < alpha:
+        choice = "lag"
+        why = (f"The lag restriction is not rejected (LR = {lag_stat:.1f}, p = {lag_p:.4f}) while the common factor "
+               f"restriction is (LR = {cf_stat:.1f}, p = {cf_p:.4f}), so the spatial lag model is kept.")
+    else:
+        choice = "error" if ll["error"] >= ll["lag"] else "lag"
+        why = (f"Neither restriction is rejected (common factor p = {cf_p:.4f}; lag p = {lag_p:.4f}); the simpler "
+               f"model with the higher log-likelihood ({choice}) is kept.")
+    result = {"outcome": outcome, "logll_error": ll["error"], "logll_lag": ll["lag"], "logll_durbin": ll["durbin"],
+              "aic_error": fits["error"][0].aic, "aic_lag": fits["lag"][0].aic, "aic_durbin": fits["durbin"][0].aic,
+              "lr_common_factor": cf_stat, "p_common_factor": cf_p, "lr_durbin_vs_lag": lag_stat,
+              "p_durbin_vs_lag": lag_p, "choice": choice, "why": why}
+    return result, fits
+
+
+def durbin_impacts(model, w, xvars=XVARS, draws=2000, seed=config.SEED):
+    """Direct, indirect (spillover), and total effects for a spatial Durbin model.
+
+    For variable k: S_k = (I - rho W)^-1 (beta_k I + theta_k W). Average direct
+    effect = mean diag(S_k) = beta_k * mean(1/(1 - rho*e)) + theta_k * mean(e/(1 - rho*e))
+    over W's eigenvalues e; total = (beta_k + theta_k) / (1 - rho); indirect =
+    total - direct (LeSage & Pace, 2009). Intervals come from 2,000 draws of the
+    estimated parameter distribution.
+    """
+    eig = np.real(np.linalg.eigvals(w.full()[0]))
+    k = len(xvars)
+    b = np.ravel(model.betas)        # [const, x1..xk, Wx1..Wxk, rho]
+    vm = np.asarray(model.vm)
+
+    def effects(params):
+        rho = params[-1]
+        d0 = np.mean(1.0 / (1.0 - rho * eig))
+        d1 = np.mean(eig / (1.0 - rho * eig))
+        beta, theta = params[1:k + 1], params[k + 1:2 * k + 1]
+        direct = beta * d0 + theta * d1
+        total = (beta + theta) / (1.0 - rho)
+        return np.vstack([direct, total - direct, total])
+
+    point = effects(b)
+    rng = np.random.default_rng(seed)
+    sims = rng.multivariate_normal(b, vm, size=draws)
+    sims = sims[np.abs(sims[:, -1]) < 1]
+    sim = np.array([effects(s) for s in sims])          # draws x 3 x k
+    rows = []
+    for j, name in enumerate(xvars):
+        for i, kind in enumerate(("direct", "indirect", "total")):
+            s = sim[:, i, j]
+            lo, hi = np.percentile(s, [2.5, 97.5])
+            p = 2 * min((s > 0).mean(), (s < 0).mean())
+            rows.append({"term": name, "effect": kind, "estimate": point[i, j], "se": s.std(),
+                         "ci_low": lo, "ci_high": hi, "p": max(p, 1 / len(s))})
+    return pd.DataFrame(rows)

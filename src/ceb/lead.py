@@ -89,8 +89,12 @@ def is_low_income(bracket):
     return bool(nums) and max(nums) <= 80
 
 
-def tract_burden(raw, low_income_rule=is_low_income):
-    """Aggregate cohort rows to one row per tract."""
+def cohorts(raw, low_income_rule=is_low_income):
+    """Clean LEAD cohort rows: one row per household group, with totals and burden.
+
+    Used for the tract build and for household-level policy calculations.
+    attrs carry the counts of households dropped and a per-bracket diagnostic.
+    """
     df = standardize_columns(raw) if "tract" not in raw.columns else raw.copy()
     money = ["income", "elec", "gas", "other_fuel"]
     if not df.attrs.get("money_is_total", True):
@@ -125,6 +129,18 @@ def tract_burden(raw, low_income_rule=is_low_income):
 
     df["cohort_burden"] = 100 * df["energy"] / df["income"]
     df["low_income"] = df["income_bracket"].map(low_income_rule)
+    df.attrs["households_dropped_nonpositive_income"] = dropped
+    df.attrs["households_dropped_no_income_data"] = no_data_units
+    df.attrs["bracket_diagnostics"] = diag
+    return df
+
+
+def tract_burden(raw, low_income_rule=is_low_income):
+    """Aggregate cohort rows to one row per tract."""
+    df = cohorts(raw, low_income_rule)
+    dropped = df.attrs["households_dropped_nonpositive_income"]
+    no_data_units = df.attrs["households_dropped_no_income_data"]
+    diag = df.attrs["bracket_diagnostics"]
 
     g = df.groupby("tract")
     out = pd.DataFrame({
