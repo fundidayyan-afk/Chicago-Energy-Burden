@@ -1,0 +1,26 @@
+{
+  "queen": {
+    "I": 0.8323239281671423,
+    "expected_I": -0.001303780964797914,
+    "z": 40.48642355409109,
+    "p_sim": 0.0001
+  },
+  "knn": {
+    "I": 0.8312169470958619,
+    "expected_I": -0.001303780964797914,
+    "z": 42.330578907986016,
+    "p_sim": 0.0001
+  },
+  "lisa_fdr_cutoff": 0.025130208333333334,
+  "lisa_counts_fdr": {
+    "Not significant": 382,
+    "Low-Low": 206,
+    "High-High": 178,
+    "Low-High": 2
+  },
+  "lisa_counts_raw_p05": {
+    "Low-Low": 251,
+    "High-High": 205,
+    "Low-High": 2
+  }
+}

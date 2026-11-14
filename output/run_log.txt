@@ -1,8 +1,8 @@
-Run started 2026-11-13 00:07 UTC, commit 57f23a8
+Run started 2026-11-14 16:39 UTC, commit 8d6c786
 
 ===== unit tests =====
 .........                                                                [100%]
-9 passed in 1.76s
+9 passed in 1.85s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
@@ -12,42 +12,111 @@ TIGER/Line tracts and places
   get     https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_17_tract.zip
   get     https://www2.census.gov/geo/tiger/TIGER2022/PLACE/tl_2022_17_place.zip
 ACS 5-year, 2018-2022 and 2020-2024
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/models.py", line 1116, in json
-    return complexjson.loads(self.text, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/json/__init__.py", line 346, in loads
-    return _default_decoder.decode(s)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/json/decoder.py", line 337, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/json/decoder.py", line 355, in raw_decode
-    raise JSONDecodeError("Expecting value", s, err.value) from None
-json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+  saved   acs5_2022_tracts.csv (1551 tracts)
+  saved   acs5_2024_tracts.csv (1551 tracts)
+Done.
 
-During handling of the above exception, another exception occurred:
+===== 02_build =====
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/geopandas/tools/overlay.py:386: UserWarning: `keep_geom_type=True` in overlay resulted in 94 dropped geometries of different geometry types than df1 has. Set `keep_geom_type=False` to retain all geometries
+  result = _collection_extract(result, geom_type, keep_geom_type_warning)
+Chicago tracts (>= 50% of land in city): 782
+LEAD file: IL AMI Census Tracts 2022.csv
+# Sample construction log
 
-Traceback (most recent call last):
-  File "/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/src/ceb/download.py", line 95, in _census_get
-    return r.json()
-           ^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/models.py", line 1120, in json
-    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
-requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+- Tracts with >= 50% of land area in Chicago: 782
+- LEAD households dropped for zero/negative cohort income: 150419
+- no LEAD record: 3  
+  `17031381700, 17031980000, 17031980100`
+- fewer than 100 households: 3  
+  `17031381700, 17031980000, 17031980100`
+- a model covariate is missing: 14  
+  `17031839500, 17031080400, 17031351400, 17031681000, 17031380100, 17031381700, 17031611800, 17031980000, 17031260400, 17031570200, 17031671900, 17031980100, 17031611600, 17031550100`
+- an ACS covariate has CV > 0.4 (kept; dropped in robustness): 233
+- **Main analysis sample: 768 tracts**
+Saved /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/data/processed/chicago_tracts.gpkg
 
-During handling of the above exception, another exception occurred:
+===== 03_explore =====
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  warning: 1 island tract(s) with no neighbors: [371]
+('WARNING: ', 371, ' is an island (no neighbors)')
+Global Moran's I (queen): 0.832, p = 0.0001
+Global Moran's I (knn): 0.831, p = 0.0001
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  warning: 1 island tract(s) with no neighbors: [371]
+('WARNING: ', 371, ' is an island (no neighbors)')
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/esda/moran.py:1354: RuntimeWarning: invalid value encountered in divide
+  self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+LISA clusters (FDR): {'Not significant': 382, 'Low-Low': 206, 'High-High': 178, 'Low-High': 2}
+Saved maps to output/figures and tables to output/tables
 
-Traceback (most recent call last):
-  File "/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/scripts/01_download.py", line 10, in <module>
-    download.download_acs(2022)
-  File "/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/src/ceb/download.py", line 137, in download_acs
-    rows = _census_get(config.ACS_API.format(year=year), params, key)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/src/ceb/download.py", line 99, in _census_get
-    raise RuntimeError(
-RuntimeError: The Census API needs a key. Get a free one at https://api.census.gov/data/key_signup.html, click the activation link in the email, then add it to GitHub: Settings > Secrets and variables > Actions > New repository secret, named CENSUS_API_KEY.
-FAILED at 01_download
+===== 04_preliminary_summary =====
+The LEAD 2022 data cover 782 census tracts that lie mostly within Chicago; after removing tracts with too few households or missing covariates, 768 tracts and about 1,054,210 households remain. Across all of them, households spend 2.1% of income on energy. Tract burden ranges from 0.5% to 10.9% (10th to 90th percentile: 1.1% to 5.8%), and the household-weighted median tract burden is 2.3%. For households below 80% of area median income, the citywide burden is 6.8% and the median tract burden is 7.0%, compared with ACEEE's 2024 estimate of 7.2% for low-income Chicago households (2.2% for all households). About 26% of households live in income groups whose average burden is above 6%, and 15% above 10%. Burden is strongly clustered in space (global Moran's I = 0.83, p < 0.0001), with 178 tracts in significant high-burden clusters after a false discovery rate correction.
+
+Check before using: ACEEE reports medians of household burdens, while the citywide figure above is total spending over total income. The two should be close in direction and size but are not the same statistic, so describe the comparison as a sanity check, not a match.
+
+===== 05_models =====
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  warning: 1 island tract(s) with no neighbors: [371]
+('WARNING: ', 371, ' is an island (no neighbors)')
+VIF
+ ln_income        3.15
+pct_black        4.23
+pct_hispanic     3.01
+pct_pre1950      1.42
+pct_renter       2.49
+pct_multifam5    2.87
+
+Energy burden (%): Both robust LM tests reject; the larger statistic favors a spatial error model, and the spatial Durbin model is reported as a check.
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+ML_Lag
+
+ln(average energy cost): Both LM tests reject; only robust LM-error remains significant, so a spatial error model is used.
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/spreg/ml_error.py:184: RuntimeWarning: Method 'bounded' does not support relative tolerance in x; defaulting to absolute tolerance.
+  res = minimize_scalar(
+ML_Error
+ML_Lag
+
+            outcome  model       aic    logll  moran_resid_I
+        burden_pct    OLS  1782.664 -884.332          0.363
+        burden_pct  error  1559.012 -772.506         -0.040
+        burden_pct durbin  1565.575 -768.788          0.036
+ln_avg_energy_cost    OLS -1093.569  553.785          0.270
+ln_avg_energy_cost  error -1241.833  627.916         -0.023
+ln_avg_energy_cost durbin -1193.595  610.797          0.154
+
+Saved tables to output/tables
+
+===== 06_mgwr =====
+{
+  "aicc": 340.818828945911,
+  "r2": 0.943041719138374,
+  "adj_r2": 0.9297317469808077,
+  "bandwidths": {
+    "CONSTANT": 433.0,
+    "ln_income": 18.0,
+    "pct_black": 253.0,
+    "pct_hispanic": 122.0,
+    "pct_pre1950": 157.0,
+    "pct_renter": 766.0,
+    "pct_multifam5": 157.0
+  },
+  "max_local_condition_number": 9.025000632628911,
+  "share_tracts_cn_over_30": 0.0
+}
+Saved MGWR tables and maps
+
+===== 07_report =====
 Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/RESULTS.md
 
-Run finished 2026-11-13 00:08 UTC, status=1
+Run finished 2026-11-14 16:44 UTC, status=0

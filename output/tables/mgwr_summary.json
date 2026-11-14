@@ -1,0 +1,16 @@
+{
+  "aicc": 340.818828945911,
+  "r2": 0.943041719138374,
+  "adj_r2": 0.9297317469808077,
+  "bandwidths": {
+    "CONSTANT": 433.0,
+    "ln_income": 18.0,
+    "pct_black": 253.0,
+    "pct_hispanic": 122.0,
+    "pct_pre1950": 157.0,
+    "pct_renter": 766.0,
+    "pct_multifam5": 157.0
+  },
+  "max_local_condition_number": 9.025000632628911,
+  "share_tracts_cn_over_30": 0.0
+}
