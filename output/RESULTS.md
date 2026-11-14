@@ -1,6 +1,6 @@
 # Results: Household Energy Burden Across Chicago
 
-_Generated 2026-11-14 16:44 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
+_Generated 2026-11-14 16:59 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
 
 ## 1. Sample
 
@@ -17,7 +17,7 @@ _Generated 2026-11-14 16:44 UTC by the pipeline. Do not edit by hand; rerun the 
 
 ## 2. Summary
 
-The LEAD 2022 data cover 782 census tracts that lie mostly within Chicago; after removing tracts with too few households or missing covariates, 768 tracts and about 1,054,210 households remain. Across all of them, households spend 2.1% of income on energy. Tract burden ranges from 0.5% to 10.9% (10th to 90th percentile: 1.1% to 5.8%), and the household-weighted median tract burden is 2.3%. For households below 80% of area median income, the citywide burden is 6.8% and the median tract burden is 7.0%, compared with ACEEE's 2024 estimate of 7.2% for low-income Chicago households (2.2% for all households). About 26% of households live in income groups whose average burden is above 6%, and 15% above 10%. Burden is strongly clustered in space (global Moran's I = 0.83, p < 0.0001), with 178 tracts in significant high-burden clusters after a false discovery rate correction.
+The LEAD 2022 data cover 782 census tracts that lie mostly within Chicago; after removing tracts with too few households or missing covariates, 768 tracts and about 1,054,210 households remain. Across all of them, households spend 2.1% of income on energy. Tract burden ranges from 0.5% to 10.9% (10th to 90th percentile: 1.1% to 5.8%), and the household-weighted median tract burden is 2.3%. For households below 80% of area median income, the citywide burden is 6.8% and the median tract burden is 7.0%, compared with ACEEE's 2024 estimate of 7.2% for low-income Chicago households (2.2% for all households). About 26% of households live in income groups whose average burden is above 6%, and 15% above 10%. Burden is strongly clustered in space (global Moran's I = 0.83, p < 0.0001), with 177 tracts in significant high-burden clusters after a false discovery rate correction.
 
 Check before using: ACEEE reports medians of household burdens, while the citywide figure above is total spending over total income. The two should be close in direction and size but are not the same statistic, so describe the comparison as a sanity check, not a match.
 
@@ -25,10 +25,10 @@ Check before using: ACEEE reports medians of household burdens, while the citywi
 
 | Weights | Global Moran's I | p (permutation) |
 |---|---|---|
-| queen | 0.832 | 0.0001 |
+| queen | 0.831 | 0.0001 |
 | knn | 0.831 | 0.0001 |
 
-LISA clusters at 5% FDR: {'Not significant': 382, 'Low-Low': 206, 'High-High': 178, 'Low-High': 2}
+LISA clusters at 5% FDR: {'Not significant': 384, 'Low-Low': 205, 'High-High': 177, 'Low-High': 2}
 
 | Burden | Clusters |
 |---|---|
@@ -50,69 +50,69 @@ LISA clusters at 5% FDR: {'Not significant': 382, 'Low-Low': 206, 'High-High': 1
 ### Energy burden (%)
 
 - Residual Moran's I = 0.363 (p = 0.0000)
-- LM lag = 226.86 (p = 0.0000); LM error = 306.66 (p = 0.0000)
-- Robust LM lag = 24.92 (p = 0.0000); robust LM error = 104.72 (p = 0.0000)
+- LM lag = 230.67 (p = 0.0000); LM error = 305.35 (p = 0.0000)
+- Robust LM lag = 25.47 (p = 0.0000); robust LM error = 100.15 (p = 0.0000)
 - Breusch-Pagan = 247.4 (p = 0.0000)
 - **Decision:** Both robust LM tests reject; the larger statistic favors a spatial error model, and the spatial Durbin model is reported as a check.
 
 ### ln(average energy cost)
 
-- Residual Moran's I = 0.270 (p = 0.0000)
-- LM lag = 16.38 (p = 0.0001); LM error = 168.62 (p = 0.0000)
-- Robust LM lag = 1.62 (p = 0.2026); robust LM error = 153.86 (p = 0.0000)
+- Residual Moran's I = 0.269 (p = 0.0000)
+- LM lag = 77.70 (p = 0.0000); LM error = 167.78 (p = 0.0000)
+- Robust LM lag = 7.90 (p = 0.0049); robust LM error = 97.98 (p = 0.0000)
 - Breusch-Pagan = 106.4 (p = 0.0000)
-- **Decision:** Both LM tests reject; only robust LM-error remains significant, so a spatial error model is used.
+- **Decision:** Both robust LM tests reject; the larger statistic favors a spatial error model, and the spatial Durbin model is reported as a check.
 
 **Energy burden (%)**: coefficient (standard error); * p<0.05, ** p<0.01, *** p<0.001
 
 | label                        | OLS               | Error             | Durbin            |
 |:-----------------------------|:------------------|:------------------|:------------------|
-| Constant                     | 23.993*** (1.083) | 22.351*** (1.095) | 17.242*** (1.154) |
-| ln(median household income)  | -1.865*** (0.088) | -1.738*** (0.089) | -1.420*** (0.088) |
-| % Black                      | 0.016*** (0.001)  | 0.013*** (0.002)  | 0.008** (0.003)   |
-| % Hispanic                   | 0.006*** (0.002)  | 0.007** (0.002)   | 0.009** (0.003)   |
+| Constant                     | 23.993*** (1.083) | 22.358*** (1.094) | 10.223*** (1.652) |
+| ln(median household income)  | -1.865*** (0.088) | -1.739*** (0.089) | -1.655*** (0.091) |
+| % Black                      | 0.016*** (0.001)  | 0.013*** (0.002)  | 0.005* (0.003)    |
+| % Hispanic                   | 0.006*** (0.002)  | 0.007** (0.002)   | 0.006 (0.003)     |
 | % housing built before 1950  | 0.002 (0.002)     | 0.006*** (0.002)  | 0.006*** (0.002)  |
-| % renter-occupied            | -0.001 (0.002)    | -0.003 (0.002)    | 0.001 (0.002)     |
-| % units in 5+ unit buildings | -0.026*** (0.002) | -0.020*** (0.002) | -0.016*** (0.002) |
-| lambda (spatial error)       |                   | 0.675*** (0.035)  |                   |
-| W_ln_income                  |                   |                   | 0.072 (0.053)     |
-| W_pct_black                  |                   |                   | -0.007* (0.003)   |
-| W_pct_hispanic               |                   |                   | -0.012*** (0.003) |
-| W_pct_pre1950                |                   |                   | -0.010*** (0.003) |
-| W_pct_renter                 |                   |                   | -0.002 (0.003)    |
-| W_pct_multifam5              |                   |                   | -0.000 (0.003)    |
-| W_burden_pct                 |                   |                   | 0.523*** (0.035)  |
+| % renter-occupied            | -0.001 (0.002)    | -0.003 (0.002)    | -0.001 (0.002)    |
+| % units in 5+ unit buildings | -0.026*** (0.002) | -0.020*** (0.002) | -0.017*** (0.002) |
+| lambda (spatial error)       |                   | 0.674*** (0.035)  |                   |
+| W_ln_income                  |                   |                   | 0.867*** (0.151)  |
+| W_pct_black                  |                   |                   | -0.001 (0.003)    |
+| W_pct_hispanic               |                   |                   | -0.005 (0.004)    |
+| W_pct_pre1950                |                   |                   | -0.009*** (0.002) |
+| W_pct_renter                 |                   |                   | 0.003 (0.003)     |
+| W_pct_multifam5              |                   |                   | 0.005 (0.003)     |
+| W_burden_pct                 |                   |                   | 0.617*** (0.038)  |
 
 **ln(average energy cost)**: coefficient (standard error); * p<0.05, ** p<0.01, *** p<0.001
 
 | label                        | OLS               | Error             | Durbin            |
 |:-----------------------------|:------------------|:------------------|:------------------|
-| Constant                     | 6.344*** (0.166)  | 6.633*** (0.176)  | 5.463*** (0.207)  |
-| ln(median household income)  | 0.140*** (0.014)  | 0.116*** (0.014)  | 0.188*** (0.015)  |
-| % Black                      | 0.003*** (0.000)  | 0.003*** (0.000)  | 0.002*** (0.000)  |
-| % Hispanic                   | 0.002*** (0.000)  | 0.002*** (0.000)  | 0.002*** (0.001)  |
+| Constant                     | 6.344*** (0.166)  | 6.624*** (0.176)  | 2.458*** (0.321)  |
+| ln(median household income)  | 0.140*** (0.014)  | 0.116*** (0.014)  | 0.128*** (0.015)  |
+| % Black                      | 0.003*** (0.000)  | 0.003*** (0.000)  | 0.001** (0.000)   |
+| % Hispanic                   | 0.002*** (0.000)  | 0.002*** (0.000)  | 0.002*** (0.000)  |
 | % housing built before 1950  | 0.001*** (0.000)  | 0.002*** (0.000)  | 0.001*** (0.000)  |
 | % renter-occupied            | -0.001*** (0.000) | -0.003*** (0.000) | -0.002*** (0.000) |
 | % units in 5+ unit buildings | -0.009*** (0.000) | -0.008*** (0.000) | -0.007*** (0.000) |
-| lambda (spatial error)       |                   | 0.635*** (0.037)  |                   |
-| W_ln_income                  |                   |                   | -0.127*** (0.023) |
-| W_pct_black                  |                   |                   | 0.000 (0.001)     |
-| W_pct_hispanic               |                   |                   | -0.002** (0.001)  |
+| lambda (spatial error)       |                   | 0.632*** (0.038)  |                   |
+| W_ln_income                  |                   |                   | -0.031 (0.023)    |
+| W_pct_black                  |                   |                   | 0.001 (0.001)     |
+| W_pct_hispanic               |                   |                   | -0.001 (0.001)    |
 | W_pct_pre1950                |                   |                   | -0.002*** (0.000) |
-| W_pct_renter                 |                   |                   | 0.001* (0.001)    |
-| W_pct_multifam5              |                   |                   | -0.001 (0.001)    |
-| W_ln_avg_energy_cost         |                   |                   | 0.232*** (0.036)  |
+| W_pct_renter                 |                   |                   | 0.003*** (0.001)  |
+| W_pct_multifam5              |                   |                   | 0.002*** (0.001)  |
+| W_ln_avg_energy_cost         |                   |                   | 0.550*** (0.042)  |
 
 **Model comparison**
 
 | outcome            | model   |      aic |    logll |   moran_resid_I |
 |:-------------------|:--------|---------:|---------:|----------------:|
 | burden_pct         | OLS     |  1782.66 | -884.332 |           0.363 |
-| burden_pct         | error   |  1559.01 | -772.506 |          -0.04  |
-| burden_pct         | durbin  |  1565.58 | -768.788 |           0.036 |
-| ln_avg_energy_cost | OLS     | -1093.57 |  553.785 |           0.27  |
-| ln_avg_energy_cost | error   | -1241.83 |  627.916 |          -0.023 |
-| ln_avg_energy_cost | durbin  | -1193.6  |  610.797 |           0.154 |
+| burden_pct         | error   |  1559.11 | -772.554 |          -0.04  |
+| burden_pct         | durbin  |  1534.87 | -753.437 |          -0.033 |
+| ln_avg_energy_cost | OLS     | -1093.57 |  553.785 |           0.269 |
+| ln_avg_energy_cost | error   | -1241.05 |  627.526 |          -0.022 |
+| ln_avg_energy_cost | durbin  | -1292.26 |  660.131 |          -0.009 |
 
 ## 5. Does it differ across the city? (RQ4)
 
