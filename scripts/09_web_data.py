@@ -92,7 +92,7 @@ if __name__ == "__main__":
         water = water[water.intersects(frame)].copy()
         water["geometry"] = water.geometry.intersection(frame)
         name = water["FULLNAME"].fillna("")
-        water["kind"] = np.where(name.str.contains("Lake Michigan"), "lake", "water")
+        water["kind"] = np.where(name.str.contains("Michigan") | (water.area > 100e6), "lake", "water")
         water = water[(water["kind"] == "lake") | (water.area > 40_000)]
         water = water.dissolve(by="kind").reset_index()[["kind", "geometry"]]
         water["geometry"] = water.geometry.simplify(15, preserve_topology=True)
