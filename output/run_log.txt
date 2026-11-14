@@ -1,4 +1,4 @@
-Run started 2026-11-14 23:06 UTC, commit d885367
+Run started 2026-11-14 23:42 UTC, commit c1fb5ec
 
 ===== unit tests =====
 .................                                                        [100%]
@@ -8,21 +8,23 @@ tests/test_core.py::test_fractional_logit_runs
     return self._fit_irls(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-17 passed, 1 warning in 2.39s
+17 passed, 1 warning in 1.96s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
-  cached  IL-2022-LEAD-data.zip
-  cached  LEAD_data_dictionary_2022.xlsx
+  get     https://data.openei.org/files/6219/IL-2022-LEAD-data.zip
+  get     https://data.openei.org/files/6219/Data%20Dictionary%202022.xlsx
 TIGER/Line tracts and places
-  cached  tl_2022_17_tract.zip
-  cached  tl_2022_17_place.zip
+  get     https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_17_tract.zip
+  get     https://www2.census.gov/geo/tiger/TIGER2022/PLACE/tl_2022_17_place.zip
 ACS 5-year, 2018-2022 and 2020-2024
-  cached  acs5_2022_tracts.csv
-  cached  acs5_2024_tracts.csv
-  cached  acs5_2022_utility_tracts.csv
-  cached  tl_2022_17031_areawater.zip
-  cached  chicago_community_areas.geojson
+  saved   acs5_2022_tracts.csv (1551 tracts)
+  saved   acs5_2024_tracts.csv (1551 tracts)
+  saved   acs5_2022_utility_tracts.csv (1551 tracts)
+  get     https://www2.census.gov/geo/tiger/TIGER2022/AREAWATER/tl_2022_17031_areawater.zip
+  saved   chicago_community_areas.geojson (77 areas) from https://data.cityofchicago.org/resource/igwz-8jzy.geojson?$limit=200
+  catalog xq83-jr8c = Chicago Energy Benchmarking; g5i5-yz37 = Chicago Energy Benchmarking - Covered Buildings
+  saved   chicago_energy_benchmarking.csv from dataset xq83-jr8c (28,334 rows)
 Done.
 
 ===== 02_build =====
@@ -171,10 +173,18 @@ elec_burden_pct_heat     error durbin           39.2298           0.0000        
 Saved tables to output/tables
 
 ===== 06_mgwr =====
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 1 tract(s) with no touching neighbor ['17043840000']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 207 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
 {
   "aicc": 338.846677965372,
-  "r2": 0.943293474271004,
-  "adj_r2": 0.9299897113461167,
+  "r2": 0.9432934742710039,
+  "adj_r2": 0.9299897113461166,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
@@ -184,9 +194,31 @@ Saved tables to output/tables
     "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.282588149367193,
-  "share_tracts_cn_over_30": 0.0
+  "max_local_condition_number": 9.282588149367191,
+  "share_tracts_cn_over_30": 0.0,
+  "n": 768,
+  "effective_parameters": 145.74980848650586,
+  "logll_original_scale": -509.63849493388216,
+  "aic_original_scale": 1312.776606840776,
+  "share_tracts_significant": {
+    "CONSTANT": 1.0,
+    "ln_income": 0.4921875,
+    "pct_black": 1.0,
+    "pct_hispanic": 0.4908854166666667,
+    "pct_pre1950": 0.4440104166666667,
+    "pct_renter": 0.0,
+    "pct_multifam5": 0.9505208333333334
+  },
+  "moran_resid_I": -0.027272889272055345
 }
+
+Model comparison, energy burden
+         model      aic    logll  moran_resid_I  pseudo_r2  effective_parameters  delta_aic
+           OLS 1855.024 -920.512          0.363        NaN                   NaN    542.248
+ Spatial error 1631.771 -808.886         -0.036        NaN                   NaN    318.994
+   Spatial lag 1657.559 -820.780          0.072        NaN                   NaN    344.783
+Spatial Durbin 1611.812 -791.906         -0.030        NaN                   NaN    299.035
+          MGWR 1312.777 -509.638         -0.027      0.943                145.75      0.000
 Saved MGWR tables and maps
 
 ===== 08_robustness =====
@@ -340,7 +372,7 @@ Validation: {
   },
   "annual_cost": {
     "n": 768,
-    "pearson": 0.8572405162859255,
+    "pearson": 0.8572405162859253,
     "spearman": 0.8498965738450349,
     "top_quintile_overlap": 0.6428571428571429
   },
@@ -386,6 +418,69 @@ Low-income households (<80% AMI) only       0.3          127037.49           5.4
 
 _Counts use LEAD household-group averages, so they approximate how many households cross each line._
 
+===== 11_figures =====
+Priority tracts by community area (top 15)
+                        tracts    households
+community_area                              
+Austin                      16  20883.263334
+Chicago Lawn                10  15161.505575
+Roseland                    13  13364.719348
+Chatham                      8  12994.411879
+Greater Grand Crossing      12  11966.253896
+South Lawndale              10  10781.997503
+Auburn Gresham              10  10262.719484
+West Englewood              18   9149.299900
+North Lawndale              10   8933.752340
+Englewood                   10   7673.217005
+West Pullman                 6   6839.599722
+South Chicago                6   6833.924741
+Humboldt Park                3   6185.519368
+West Garfield Park           9   5303.829007
+East Garfield Park           9   4725.871911
+Saved effect plots and priority map
+
+===== 12_benchmarking =====
+Benchmarking rows: 28,329; columns: ['data_year', 'id', 'property_name', 'reporting_status', 'address', 'zip_code', 'chicago_energy_rating', 'exempt_from_chicago_energy_rating', 'community_area', 'primary_property_type', 'gross_floor_area_buildings_sq_ft', 'year_built', 'of_buildings', 'water_use_kgal', 'energy_star_score', 'electricity_use_kbtu', 'natural_gas_use_kbtu', 'district_steam_use_kbtu', 'district_chilled_water_use_kbtu', 'all_other_fuel_use_kbtu', 'site_eui_kbtu_sq_ft', 'source_eui_kbtu_sq_ft', 'weather_normalized_site_eui_kbtu_sq_ft', 'weather_normalized_source_eui_kbtu_sq_ft', 'total_ghg_emissions_metric_tons_co2e', 'ghg_intensity_kg_co2e_sq_ft', 'latitude', 'longitude', 'location', 'row_id']
+Using: year=data_year, type=primary_property_type, eui=site_eui_kbtu_sq_ft, gas=natural_gas_use_kbtu, area=gross_floor_area_buildings_sq_ft, built=year_built, lat=latitude, lon=longitude
+Multifamily buildings reporting in 2023: 1,355
+{
+  "data_year": 2023,
+  "multifamily_buildings": 1262,
+  "tracts_with_buildings": 416,
+  "median_site_eui_high_burden_clusters": 71.6,
+  "median_site_eui_elsewhere": 69.5,
+  "buildings_in_high_burden_clusters": 121,
+  "mann_whitney_p": 0.16493462170562823,
+  "tracts_with_3plus_buildings": 131,
+  "spearman_tract_eui_vs_burden": 0.11604287789100785,
+  "columns_used": {
+    "year": "data_year",
+    "type": "primary_property_type",
+    "site_eui": "site_eui_kbtu_sq_ft",
+    "gas": "natural_gas_use_kbtu",
+    "area": "gross_floor_area_buildings_sq_ft",
+    "year_built": "year_built"
+  },
+  "note": "Buildings of about 50,000 sq ft and up only; supporting context, not a household measure.",
+  "source": {
+    "dataset_id": "xq83-jr8c",
+    "name": "Chicago Energy Benchmarking",
+    "url": "https://data.cityofchicago.org/d/xq83-jr8c"
+  }
+}
+By cluster
+                 buildings  median_site_eui  median_gas_kbtu_per_sqft
+cluster                                                              
+High-High              121             71.6                      48.1
+Low-Low                740             69.6                      48.9
+Not significant        401             68.7                      47.5
+By era
+               buildings  median_site_eui  median_gas_kbtu_per_sqft
+era                                                                
+Before 1950          352             71.6                      55.9
+1950-1979            342             79.5                      62.6
+1980 or later        568             62.8                      37.5
+
 ===== 09_web_data =====
 Community areas: 77; tracts matched: 764
 Water layers: ['lake', 'water']
@@ -399,11 +494,48 @@ Water layers: ['lake', 'water']
   "hotspot_tracts": 175,
   "coldspot_tracts": 203,
   "data_year": "LEAD 2022, ACS 2018-2022",
+  "mgwr_bandwidths": {
+    "CONSTANT": 433.0,
+    "ln_income": 18.0,
+    "pct_black": 205.0,
+    "pct_hispanic": 98.0,
+    "pct_pre1950": 210.0,
+    "pct_renter": 760.0,
+    "pct_multifam5": 157.0
+  },
   "updated": "2026-11-14"
 }
-Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/web/tracts.geojson (0.48 MB)
+Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/web/tracts.geojson (0.57 MB)
 
 ===== 07_report =====
+/home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/scripts/07_report.py:145: Pandas4Warning: 'str' is not supported as a fill value for float64 dtype. In a future version, calling fillna with an incompatible value will raise. Explicitly cast to a common dtype before filling.
+  pd.read_csv(mc).round(3).fillna("").to_markdown(index=False), ""]
 Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/RESULTS.md
 
-Run finished 2026-11-14 23:11 UTC, status=0
+===== notebooks =====
+wrote notebooks/01_data_and_validation.ipynb
+wrote notebooks/02_exploratory_spatial_analysis.ipynb
+wrote notebooks/03_regression_models.ipynb
+wrote notebooks/04_mgwr.ipynb
+wrote notebooks/05_robustness.ipynb
+wrote notebooks/06_policy_and_context.ipynb
+[NbConvertApp] Converting notebook notebooks/01_data_and_validation.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 291567 bytes to notebooks/01_data_and_validation.ipynb
+[NbConvertApp] Converting notebook notebooks/02_exploratory_spatial_analysis.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 848165 bytes to notebooks/02_exploratory_spatial_analysis.ipynb
+[NbConvertApp] Converting notebook notebooks/03_regression_models.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 368163 bytes to notebooks/03_regression_models.ipynb
+[NbConvertApp] Converting notebook notebooks/04_mgwr.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 1890442 bytes to notebooks/04_mgwr.ipynb
+[NbConvertApp] Converting notebook notebooks/05_robustness.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 31884 bytes to notebooks/05_robustness.ipynb
+[NbConvertApp] Converting notebook notebooks/06_policy_and_context.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 495611 bytes to notebooks/06_policy_and_context.ipynb
+
+Run finished 2026-11-14 23:46 UTC, status=0

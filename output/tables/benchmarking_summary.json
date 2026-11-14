@@ -1,0 +1,25 @@
+{
+  "data_year": 2023,
+  "multifamily_buildings": 1262,
+  "tracts_with_buildings": 416,
+  "median_site_eui_high_burden_clusters": 71.6,
+  "median_site_eui_elsewhere": 69.5,
+  "buildings_in_high_burden_clusters": 121,
+  "mann_whitney_p": 0.16493462170562823,
+  "tracts_with_3plus_buildings": 131,
+  "spearman_tract_eui_vs_burden": 0.11604287789100785,
+  "columns_used": {
+    "year": "data_year",
+    "type": "primary_property_type",
+    "site_eui": "site_eui_kbtu_sq_ft",
+    "gas": "natural_gas_use_kbtu",
+    "area": "gross_floor_area_buildings_sq_ft",
+    "year_built": "year_built"
+  },
+  "note": "Buildings of about 50,000 sq ft and up only; supporting context, not a household measure.",
+  "source": {
+    "dataset_id": "xq83-jr8c",
+    "name": "Chicago Energy Benchmarking",
+    "url": "https://data.cityofchicago.org/d/xq83-jr8c"
+  }
+}

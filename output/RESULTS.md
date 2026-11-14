@@ -1,6 +1,6 @@
 # Results: Household Energy Burden Across Chicago
 
-_Generated 2026-11-14 23:11 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
+_Generated 2026-11-14 23:45 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
 
 ## 1. Sample
 
@@ -228,6 +228,10 @@ Estimate with 95% interval; * p<0.05, ** p<0.01, *** p<0.001. For a spatial Durb
 | % units in 5+ unit buildings | -0.0142*** [-0.0167, -0.0114] | -0.0146*** [-0.0231, -0.0070] | -0.0287*** [-0.0373, -0.0209] |
 | pct_elec_heat                | -0.0013 [-0.0053, 0.0030]     | 0.0249*** [0.0112, 0.0393]    | 0.0236** [0.0091, 0.0391]     |
 
+![Effects on burden and bills](figures/effects_burden_costs.png)
+
+![Effects on electricity and gas burden](figures/effects_fuels.png)
+
 ### All coefficients
 
 Coefficient (standard error); * p<0.05, ** p<0.01, *** p<0.001.
@@ -447,6 +451,16 @@ MGWR adjusted R² = 0.930; AICc = 338.8; max local condition number = 9.3
 | pct_renter | 760 |
 | pct_multifam5 | 157 |
 
+**Model comparison, energy burden** (all on the original scale; lower AIC is better)
+
+| model          |     aic |    logll |   moran_resid_I |   pseudo_r2 |   effective_parameters |   delta_aic |
+|:---------------|--------:|---------:|----------------:|------------:|-----------------------:|------------:|
+| OLS            | 1855.02 | -920.512 |           0.363 |             |                        |     542.248 |
+| Spatial error  | 1631.77 | -808.886 |          -0.036 |             |                        |     318.994 |
+| Spatial lag    | 1657.56 | -820.78  |           0.072 |             |                        |     344.783 |
+| Spatial Durbin | 1611.81 | -791.906 |          -0.03  |             |                        |     299.035 |
+| MGWR           | 1312.78 | -509.638 |          -0.027 |       0.943 |                 145.75 |       0     |
+
 |   |   |   |
 |---|---|---|
 | ![mgwr_ln_income](figures/mgwr_ln_income.png) | ![mgwr_pct_black](figures/mgwr_pct_black.png) | ![mgwr_pct_hispanic](figures/mgwr_pct_hispanic.png) |
@@ -553,6 +567,28 @@ _Counts use LEAD household-group averages, so they approximate how many househol
 | Same number of households | Highest poverty rate | 166 | 178,000 | 57,419 | 35.0% | 87,093 | 30.9% | 86 |
 | Same number of households | Highest measured burden (benchmark) | 174 | 177,892 | 62,998 | 38.4% | 100,089 | 35.6% | 131 |
 
+![Priority tracts](figures/map_priority.png)
+
+**Priority tracts by community area (top 15)**
+
+| community_area         |   tracts |   households |
+|:-----------------------|---------:|-------------:|
+| Austin                 |       16 |     20883.3  |
+| Chicago Lawn           |       10 |     15161.5  |
+| Roseland               |       13 |     13364.7  |
+| Chatham                |        8 |     12994.4  |
+| Greater Grand Crossing |       12 |     11966.3  |
+| South Lawndale         |       10 |     10782    |
+| Auburn Gresham         |       10 |     10262.7  |
+| West Englewood         |       18 |      9149.3  |
+| North Lawndale         |       10 |      8933.75 |
+| Englewood              |       10 |      7673.22 |
+| West Pullman           |        6 |      6839.6  |
+| South Chicago          |        6 |      6833.92 |
+| Humboldt Park          |        3 |      6185.52 |
+| West Garfield Park     |        9 |      5303.83 |
+| East Garfield Park     |        9 |      4725.87 |
+
 **Cost-cut scenarios in the priority tracts**
 
 | Who | Cut | Households served | Burden before / after | Low-income burden before / after | Above 6% before / after | Above 10% before / after | Savings per served household |
@@ -563,4 +599,30 @@ _Counts use LEAD household-group averages, so they approximate how many househol
 | Low-income households (<80% AMI) only | 10% | 127,037 | 5.43% / 5.06% | 9.54% / 8.59% | 93,905 / 85,512 | 58,894 / 53,962 | $286 |
 | Low-income households (<80% AMI) only | 20% | 127,037 | 5.43% / 4.69% | 9.54% / 7.63% | 93,905 / 78,636 | 58,894 / 49,134 | $572 |
 | Low-income households (<80% AMI) only | 30% | 127,037 | 5.43% / 4.33% | 9.54% / 6.68% | 93,905 / 69,970 | 58,894 / 43,762 | $857 |
+
+## 8. Context: large multifamily buildings (Chicago Energy Benchmarking)
+
+1,262 benchmarked multifamily buildings (2023). Median site energy use intensity: 71.6 kBtu/sq ft in high-burden cluster tracts (121 buildings) vs. 69.5 elsewhere (Mann-Whitney p = 0.165).
+
+**By burden cluster**
+
+| cluster         |   buildings |   median_site_eui |   median_gas_kbtu_per_sqft |
+|:----------------|------------:|------------------:|---------------------------:|
+| High-High       |         121 |              71.6 |                       48.1 |
+| Low-Low         |         740 |              69.6 |                       48.9 |
+| Not significant |         401 |              68.7 |                       47.5 |
+
+**By year built**
+
+| era           |   buildings |   median_site_eui |   median_gas_kbtu_per_sqft |
+|:--------------|------------:|------------------:|---------------------------:|
+| Before 1950   |         352 |              71.6 |                       55.9 |
+| 1950-1979     |         342 |              79.5 |                       62.6 |
+| 1980 or later |         568 |              62.8 |                       37.5 |
+
+_Buildings of about 50,000 sq ft and up only; supporting context, not a household measure._
+
+## Notebooks
+
+Step-by-step notebooks with live outputs are in [`notebooks/`](../notebooks/).
 
