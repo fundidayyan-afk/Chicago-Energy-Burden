@@ -145,7 +145,7 @@ for o in ["burden_pct", "ln_avg_energy_cost"]:
     display(pd.read_csv(T / f"moe_combined_{o}.csv")[["label", "effect", "original_estimate", "moe_estimate",
             "moe_se", "moe_p", "moe_share_variance_from_measurement"]].round(4))
     r = pd.read_csv(T / f"robust_estimators_{o}.csv")
-    display(r[r["effect"] == "total"].pivot(index="label", columns="estimator", values="estimate").round(4))'''),
+    display(r[r["effect"] == "direct"].pivot(index="label", columns="estimator", values="estimate").round(4))'''),
     md("## Threshold outcomes (fractional logit, average marginal effects)"),
     code('''thr = pd.read_csv(T / "threshold_models.csv")
 thr[thr["model"].str.startswith("Fractional") & (thr["term"] != "CONSTANT")][["model", "label", "ame", "ame_se", "p"]].round(4)'''),

@@ -253,10 +253,13 @@ if __name__ == "__main__":
             f = t / f"robust_estimators_{outcome}.csv"
             if f.exists():
                 d = pd.read_csv(f)
-                d = d[d["effect"] == "total"]
-                d["cell"] = d.apply(lambda r: f"{r.estimate:.4f}{stars(r.p)}", axis=1)
-                parts += [f"**{name}: total effects by estimator**", "",
-                          d.pivot(index="label", columns="estimator", values="cell").to_markdown(), ""]
+                d["cell"] = d.apply(lambda r: f"{r.estimate:.4f}{stars(r.p)} ({r.se:.4f})", axis=1)
+                for eff in ("direct", "total"):
+                    e = d[d["effect"] == eff]
+                    if eff == "total":
+                        e = e[e["estimator"].isin(["ML spatial Durbin (main)", "SLX, spatial HAC SEs"])]
+                    parts += [f"**{name}: {eff} effects by estimator** (estimate, SE)", "",
+                              e.pivot(index="label", columns="estimator", values="cell").to_markdown(), ""]
     prof = t / "typology_profiles.csv"
     if prof.exists():
         d = pd.read_csv(prof)

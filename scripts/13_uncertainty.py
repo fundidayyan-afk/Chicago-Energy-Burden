@@ -39,18 +39,24 @@ if __name__ == "__main__":
         comb.to_csv(config.TABLES / f"moe_combined_{outcome}.csv", index=False)
         print(f"\n{label}: margin-of-error simulation\n" + comb.round(4).to_string(index=False))
 
-        rob = uncertainty.robust_durbin(sample, outcome, w)
+        rob = uncertainty.robust_checks(sample, outcome, w)
         rob["label"] = rob["term"].map(models.LABELS)
         rob.to_csv(config.TABLES / f"robust_estimators_{outcome}.csv", index=False)
-        piv = rob[rob["effect"] == "total"].pivot(index="label", columns="estimator", values="p")
-        print(f"\n{label}: total-effect p-values by estimator\n" + piv.round(4).to_string())
+        piv = rob[rob["effect"] == "direct"].pivot(index="label", columns="estimator", values="p")
+        print(f"\n{label}: direct-effect p-values by estimator\n" + piv.round(4).to_string())
 
         sig_orig = comb["original_p"] < 0.05
         sig_moe = comb["moe_p"] < 0.05
         lost = comb[sig_orig & ~sig_moe]
-        tot = rob[rob["effect"] == "total"]
-        stable = tot.groupby("term").apply(lambda g: (g["p"] < 0.05).nunique() == 1 and
-                                           (g["estimate"] > 0).nunique() == 1, include_groups=False)
+        def stable(df):
+            g = df.groupby("term")
+            return g.apply(lambda d: (d["p"] < 0.05).nunique() == 1 and (d["estimate"] > 0).nunique() == 1,
+                           include_groups=False)
+        direct_stable = stable(rob[rob["effect"] == "direct"])
+        tot = rob[(rob["effect"] == "total") & rob["estimator"].isin(["ML spatial Durbin (main)",
+                                                                      "SLX, spatial HAC SEs"])]
+        total_stable = stable(tot)
+        rhos = rob.dropna(subset=["rho"]).groupby("estimator")[["rho", "rho_se"]].first()
         lines += [f"## {label}", "",
                   f"- Effects significant in the main model that stay significant after accounting for ACS "
                   f"measurement error: {int((sig_orig & sig_moe).sum())} of {int(sig_orig.sum())}"
@@ -59,7 +65,14 @@ if __name__ == "__main__":
                   f"{comb['moe_share_variance_from_measurement'].max():.0%} "
                   f"({comb.loc[comb['moe_share_variance_from_measurement'].idxmax(), 'label']}, "
                   f"{comb.loc[comb['moe_share_variance_from_measurement'].idxmax(), 'effect']}).",
-                  f"- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: "
-                  f"{int(stable.sum())} of {len(stable)}.", ""]
+                  f"- Direct effects with the same sign and significance under all five estimators (ML Durbin, "
+                  f"S2SLS Durbin, GMM Durbin, SLX with spatial HAC, GMM spatial error): "
+                  f"{int(direct_stable.sum())} of {len(direct_stable)}.",
+                  f"- Total effects with the same sign and significance in the ML Durbin model and the SLX model "
+                  f"with spatial HAC standard errors: {int(total_stable.sum())} of {len(total_stable)}.",
+                  "- Spatial lag parameter rho: " + "; ".join(f"{e} {r.rho:.2f} (SE {r.rho_se:.2f})"
+                                                           for e, r in rhos.iterrows())
+                  + ". The instrumental-variable estimators identify rho only weakly once neighbors' covariates "
+                  "are in the model, so their total effects (which divide by 1 - rho) are not used.", ""]
     (config.TABLES / "uncertainty_summary.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))

@@ -92,21 +92,63 @@ def combine(sim, original):
     return pd.DataFrame(out)
 
 
-def robust_durbin(sample, outcome, w, xvars=XVARS):
-    """Spatial Durbin effects under three estimators: ML, S2SLS-White, and GMM-HET."""
+def hac_kernel(sample, k=12):
+    """Adaptive triangular kernel over the k nearest tracts, for spatial HAC standard errors."""
+    import libpysal
+    pts = sample.copy()
+    pts["geometry"] = sample.geometry.representative_point()
+    return libpysal.weights.Kernel.from_dataframe(pts, fixed=False, k=k, function="triangular",
+                                                  diagonal=True, use_index=False)
+
+
+def robust_checks(sample, outcome, w, xvars=XVARS):
+    """Effects under estimators that do not assume constant error variance.
+
+    - ML spatial Durbin (the main model, for reference)
+    - Spatial Durbin by S2SLS with White SEs, and by GMM robust to heteroskedasticity
+      (Kelejian & Prucha, 2010; Arraiz et al., 2010). Their direct effects are
+      reliable; rho is only weakly identified by the spatial instruments once WX is
+      in the model, so their total effects are reported with that caveat.
+    - SLX (OLS with neighbors' covariates) with spatial HAC standard errors
+      (Kelejian & Prucha, 2007): direct = beta, spillover = theta, total = beta + theta,
+      identified without rho (Halleck Vega & Elhorst, 2015).
+    - Spatial error model by GMM, robust to heteroskedasticity: direct effects.
+    """
     y, X = design(sample, outcome, xvars)
     k = len(xvars)
-    fits = {}
-    ml, _ = spatial_model(sample, outcome, w, "durbin", xvars)
-    fits["ML (main)"] = (np.ravel(ml.betas), np.asarray(ml.vm))
-    s2 = spreg.GM_Lag(y, X, w=w, slx_lags=1, w_lags=2, robust="white", name_x=list(xvars), name_y=outcome)
-    fits["S2SLS, White SEs"] = (np.ravel(s2.betas), np.asarray(s2.vm))
-    het = spreg.GM_Combo_Het(y, X, w=w, slx_lags=1, w_lags=2, name_x=list(xvars), name_y=outcome)
-    p = 2 * k + 2                                  # const, x, Wx, rho (drop lambda)
-    fits["GMM, heteroskedasticity-robust"] = (np.ravel(het.betas)[:p], np.asarray(het.vm)[:p, :p])
-    out = []
-    for name, (b, vm) in fits.items():
+    out, notes = [], {}
+
+    def durbin(name, b, vm, rho_note=None):
         imp = durbin_impacts(SimpleNamespace(betas=b, vm=vm), w, xvars)
         imp.insert(0, "estimator", name)
+        imp["rho"] = b[-1]
+        imp["rho_se"] = float(np.sqrt(vm[-1, -1]))
         out.append(imp)
+
+    ml, _ = spatial_model(sample, outcome, w, "durbin", xvars)
+    durbin("ML spatial Durbin (main)", np.ravel(ml.betas), np.asarray(ml.vm))
+    s2 = spreg.GM_Lag(y, X, w=w, slx_lags=1, w_lags=2, robust="white", name_x=list(xvars), name_y=outcome)
+    durbin("S2SLS spatial Durbin, White SEs", np.ravel(s2.betas), np.asarray(s2.vm))
+    het = spreg.GM_Combo_Het(y, X, w=w, slx_lags=1, w_lags=2, name_x=list(xvars), name_y=outcome)
+    p = 2 * k + 2                                  # const, x, Wx, rho (lambda dropped)
+    durbin("GMM spatial Durbin, heteroskedasticity-robust", np.ravel(het.betas)[:p], np.asarray(het.vm)[:p, :p])
+
+    slx = spreg.OLS(y, X, w=w, slx_lags=1, robust="hac", gwk=hac_kernel(sample), name_x=list(xvars), name_y=outcome)
+    b, vm = np.ravel(slx.betas), np.asarray(slx.vm)
+    from scipy import stats
+    for j, t in enumerate(xvars):
+        i_b, i_t = 1 + j, 1 + k + j
+        for eff, est, var in [("direct", b[i_b], vm[i_b, i_b]), ("indirect", b[i_t], vm[i_t, i_t]),
+                              ("total", b[i_b] + b[i_t], vm[i_b, i_b] + vm[i_t, i_t] + 2 * vm[i_b, i_t])]:
+            se = float(np.sqrt(var))
+            out.append(pd.DataFrame([{"estimator": "SLX, spatial HAC SEs", "term": t, "effect": eff,
+                                      "estimate": est, "se": se, "ci_low": est - 1.96 * se, "ci_high": est + 1.96 * se,
+                                      "p": 2 * stats.norm.sf(abs(est / se))}]))
+    eh = spreg.GM_Error_Het(y, X, w=w, name_x=list(xvars), name_y=outcome)
+    b, vm = np.ravel(eh.betas), np.asarray(eh.vm)
+    for j, t in enumerate(xvars):
+        est, se = b[1 + j], float(np.sqrt(vm[1 + j, 1 + j]))
+        out.append(pd.DataFrame([{"estimator": "GMM spatial error, heteroskedasticity-robust", "term": t,
+                                  "effect": "direct", "estimate": est, "se": se, "ci_low": est - 1.96 * se,
+                                  "ci_high": est + 1.96 * se, "p": 2 * stats.norm.sf(abs(est / se))}]))
     return pd.concat(out, ignore_index=True)
