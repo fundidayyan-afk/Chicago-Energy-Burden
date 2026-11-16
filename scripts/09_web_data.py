@@ -47,12 +47,18 @@ if __name__ == "__main__":
         m = m[["GEOID"] + [v for v in MG_VARS if v in m.columns]].rename(columns={v: f"mg_{v}" for v in MG_VARS})
         sample = sample.merge(m, on="GEOID", how="left")
 
+    ty = config.TABLES / "typology_tracts.csv"
+    if ty.exists():
+        sample = sample.merge(pd.read_csv(ty, dtype={"GEOID": str}), on="GEOID", how="left")
+
     out = gpd.GeoDataFrame({"id": sample["GEOID"],
                             "name": sample["NAMELSAD"].str.replace("Census Tract ", "Tract ", regex=False)},
                            geometry=sample.geometry, crs=sample.crs)
     for col, (key, nd) in FIELDS.items():
         out[key] = sample[col].round(nd)
     out["cluster"] = sample["cluster"].fillna("Not significant")
+    if "type" in sample:
+        out["type"] = sample["type"].astype("Int64")
     for c in [c for c in sample.columns if c.startswith("mg_")]:
         out[c] = sample[c].round(3)     # standardized local coefficient; blank = not significant
 

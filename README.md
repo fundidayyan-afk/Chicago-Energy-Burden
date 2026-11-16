@@ -47,6 +47,8 @@ python scripts/08_robustness.py        # weights, reliable tracts, ACS 2020-24, 
 python scripts/10_policy.py            # targeting rules and cost-cut scenarios (household groups)
 python scripts/11_figures.py           # coefficient plots and the priority-tract map
 python scripts/12_benchmarking.py      # Chicago Energy Benchmarking context
+python scripts/13_uncertainty.py       # ACS margin-of-error simulation, heteroskedasticity-robust estimators
+python scripts/14_typology.py          # neighborhood typology (k-means)
 python scripts/09_web_data.py          # data for the interactive map
 python scripts/07_report.py            # output/RESULTS.md
 python scripts/build_notebooks.py      # notebooks/ (then run them in Jupyter)
@@ -83,6 +85,16 @@ output/tables/    regression tables, cluster lists, sample construction log
 - **Policy counts** (targeting rules, cost-cut scenarios) use LEAD household groups, so a household is counted above a burden line when its group's average is above it.
 - **MGWR** uses standardized variables and AICc bandwidths; local coefficients are mapped only where significant after the package's multiple-testing correction.
 - Results describe **neighborhoods, not individual households**.
+
+## Reproducibility
+
+- Every run on GitHub Actions records the exact package versions it used in [`requirements-lock.txt`](requirements-lock.txt). To reproduce a result exactly, install from that file instead of `requirements.txt`.
+- Tagged releases (starting with `v1.0.0`) freeze the code, data outputs, and figures that a written report cites.
+- Random steps (permutation tests, simulations, k-means) use a fixed seed set in `src/ceb/config.py`.
+
+## Citation
+
+See [`CITATION.cff`](CITATION.cff), or use **Cite this repository** on the GitHub page.
 
 ## License
 

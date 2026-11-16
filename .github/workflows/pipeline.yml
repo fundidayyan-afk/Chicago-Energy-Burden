@@ -64,7 +64,7 @@ jobs:
           fi
           steps="01_download 02_build 03_explore 04_preliminary_summary 05_models"
           if [ "${{ inputs.skip_mgwr }}" != "true" ]; then steps="$steps 06_mgwr"; fi
-          steps="$steps 08_robustness 10_policy 11_figures 12_benchmarking 09_web_data 07_report"
+          steps="$steps 08_robustness 10_policy 11_figures 12_benchmarking 13_uncertainty 14_typology 09_web_data 07_report"
           status=0
           for s in $steps; do
             echo "" >> $log; echo "===== $s =====" | tee -a $log
@@ -88,12 +88,16 @@ jobs:
           echo "" >> $log; echo "Run finished $(date -u '+%Y-%m-%d %H:%M UTC'), status=$status" >> $log
           echo "status=$status" >> $GITHUB_OUTPUT
 
+      - name: Record exact package versions
+        if: always()
+        run: pip freeze --exclude-editable > requirements-lock.txt
+
       - name: Commit results back to the repo
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
-          for path in output data/processed notebooks; do if [ -e "$path" ]; then git add -f "$path"; fi; done
+          for path in output data/processed notebooks requirements-lock.txt; do if [ -e "$path" ]; then git add -f "$path"; fi; done
           if git diff --cached --quiet; then echo "Nothing new to commit"; exit 0; fi
           git commit -m "Pipeline results for ${GITHUB_SHA::7} (status ${{ steps.pipeline.outputs.status }})"
           git pull --rebase -X theirs origin main

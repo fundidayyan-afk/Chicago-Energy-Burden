@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this code or its results, please cite it as below."
+title: "Where Energy Bills Hurt Most: Household Energy Burden Across Chicago"
+type: software
+authors:
+  - family-names: Fundi
+    given-names: Dayyan Lutshaka
+    affiliation: Lake Forest College
+version: 1.0.0
+date-released: 2026-11-15
+license: MIT
+repository-code: "https://github.com/fundidayyan-afk/Chicago-Energy-Burden"
+url: "https://dayyan-website.vercel.app/energy-burden.html"
+abstract: >-
+  Tract-level analysis of household energy burden in Chicago using the U.S.
+  Department of Energy LEAD Tool (2022) and the American Community Survey:
+  hotspot detection, spatial Durbin and multiscale geographically weighted
+  regression, robustness and measurement-error checks, and policy analysis.
+  James Rocco Quantitative Data Research Scholarship, Lake Forest College.
+keywords:
+  - energy burden
+  - spatial econometrics
+  - Chicago
+  - LEAD Tool
+  - MGWR
+  - energy justice

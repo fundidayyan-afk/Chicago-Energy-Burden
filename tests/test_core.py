@@ -214,3 +214,24 @@ def test_policy_select_by_households():
     assert policy.select(tr, "inc", True, n_tracts=2) == ["B", "C"]
     assert policy.select(tr, "inc", True, n_households=250) == ["B", "C"]
     assert policy.select(tr, "inc", True, n_households=150) == ["B"]
+
+
+def test_rubin_rules():
+    from ceb.uncertainty import rubin
+    r = rubin([1.0, 1.0, 1.0, 1.0], [0.04] * 4)          # no between-draw variance
+    assert r["se"] == pytest.approx(0.2) and r["share_variance_from_measurement"] == pytest.approx(0)
+    r = rubin([0.0, 2.0], [0.0, 0.0])                      # all variance from measurement
+    assert r["estimate"] == pytest.approx(1.0)
+    assert r["se"] == pytest.approx(np.sqrt(1.5 * 2.0))
+    assert r["share_variance_from_measurement"] == pytest.approx(1.0)
+
+
+def test_perturb_with_zero_moe_is_identity():
+    from ceb.download import ACS_VARS
+    from ceb.uncertainty import perturb_acs
+    d = pd.DataFrame({"GEOID": ["1", "2"]})
+    for name in ACS_VARS.values():
+        d[name] = [100.0, 200.0]
+        d[f"{name}_moe"] = [0.0, np.nan]
+    out = perturb_acs(d, np.random.default_rng(0))
+    assert out["pop_total"].tolist() == [100.0, 200.0]

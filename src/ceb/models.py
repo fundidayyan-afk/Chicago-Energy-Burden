@@ -249,20 +249,22 @@ def durbin_impacts(model, w, xvars=XVARS, draws=2000, seed=config.SEED):
     b = np.ravel(model.betas)        # [const, x1..xk, Wx1..Wxk, rho]
     vm = np.asarray(model.vm)
 
-    def effects(params):
-        rho = params[-1]
-        d0 = np.mean(1.0 / (1.0 - rho * eig))
-        d1 = np.mean(eig / (1.0 - rho * eig))
-        beta, theta = params[1:k + 1], params[k + 1:2 * k + 1]
+    def effects(P):
+        """P: draws x params -> draws x 3 x k (direct, indirect, total)."""
+        P = np.atleast_2d(P)
+        rho = P[:, -1][:, None]
+        d0 = np.mean(1.0 / (1.0 - rho * eig[None, :]), axis=1)[:, None]
+        d1 = np.mean(eig[None, :] / (1.0 - rho * eig[None, :]), axis=1)[:, None]
+        beta, theta = P[:, 1:k + 1], P[:, k + 1:2 * k + 1]
         direct = beta * d0 + theta * d1
         total = (beta + theta) / (1.0 - rho)
-        return np.vstack([direct, total - direct, total])
+        return np.stack([direct, total - direct, total], axis=1)
 
-    point = effects(b)
+    point = effects(b)[0]
     rng = np.random.default_rng(seed)
     sims = rng.multivariate_normal(b, vm, size=draws)
     sims = sims[np.abs(sims[:, -1]) < 1]
-    sim = np.array([effects(s) for s in sims])          # draws x 3 x k
+    sim = effects(sims)                                  # draws x 3 x k
     rows = []
     for j, name in enumerate(xvars):
         for i, kind in enumerate(("direct", "indirect", "total")):

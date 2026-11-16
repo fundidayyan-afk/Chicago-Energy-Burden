@@ -136,9 +136,34 @@ threshold outcomes (shares above 6% and 10%), and fuel-specific models. Script: 
     code('''for f in sorted(T.glob("robustness_*.csv")):
     if f.stem == "robustness_long": continue
     display(Markdown(f"**{f.stem}**")); display(pd.read_csv(f, index_col=0))'''),
+    md("## Measurement error (ACS margins of error) and heteroskedasticity\nScript: `scripts/13_uncertainty.py`. "
+       "Each draw resamples every ACS input within its margin of error and refits the spatial Durbin model; "
+       "draws are combined with Rubin's rules."),
+    code('''display(Markdown((T / "uncertainty_summary.md").read_text()))
+for o in ["burden_pct", "ln_avg_energy_cost"]:
+    display(Markdown(f"**{o}**"))
+    display(pd.read_csv(T / f"moe_combined_{o}.csv")[["label", "effect", "original_estimate", "moe_estimate",
+            "moe_se", "moe_p", "moe_share_variance_from_measurement"]].round(4))
+    r = pd.read_csv(T / f"robust_estimators_{o}.csv")
+    display(r[r["effect"] == "total"].pivot(index="label", columns="estimator", values="estimate").round(4))'''),
     md("## Threshold outcomes (fractional logit, average marginal effects)"),
     code('''thr = pd.read_csv(T / "threshold_models.csv")
 thr[thr["model"].str.startswith("Fractional") & (thr["term"] != "CONSTANT")][["model", "label", "ame", "ame_se", "p"]].round(4)'''),
+])
+
+write("07_typology.ipynb", "7. Neighborhood typology",
+      """k-means clustering on nine standardized characteristics groups tracts into types, so places can be
+described as a whole rather than one variable at a time. Script: `scripts/14_typology.py`.""", [
+    code('''from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
+feats = ["burden_pct", "ln_income", "pct_black", "pct_hispanic", "pct_pre1950", "pct_renter", "pct_multifam5", "pct_elec_heat"]
+s = sample.assign(ln_avg_energy_cost=np.log(sample["avg_energy_cost"])).dropna(subset=feats)
+X = StandardScaler().fit_transform(s[feats + ["ln_avg_energy_cost"]])
+pd.DataFrame({"k": range(3, 9), "silhouette": [silhouette_score(X, KMeans(k, n_init=20, random_state=1).fit_predict(X)) for k in range(3, 9)]}).round(3)'''),
+    code('pd.read_csv(T / "typology_profiles.csv").round(2)'),
+    code('pd.read_csv(T / "typology_by_cluster.csv")'),
+    code('display(Image(F / "map_typology.png", width=900))'),
 ])
 
 write("06_policy_and_context.ipynb", "6. Policy analysis and building context",

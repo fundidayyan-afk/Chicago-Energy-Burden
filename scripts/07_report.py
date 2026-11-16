@@ -235,6 +235,45 @@ if __name__ == "__main__":
                 if (t / f).exists():
                     parts += [f"**{title}**", "", pd.read_csv(t / f).round(1).to_markdown(index=False), ""]
             parts += [f"_{b['note']}_", ""]
+    unc = read(t / "uncertainty_summary.md")
+    if unc:
+        parts += ["## 9. Measurement error and heteroskedasticity", "",
+                  unc.replace("# Measurement error and heteroskedasticity", "").replace("## ", "### ").strip(), ""]
+        for outcome, name in [("burden_pct", "Energy burden (%)"), ("ln_avg_energy_cost", "ln(average energy cost)")]:
+            f = t / f"moe_combined_{outcome}.csv"
+            if f.exists():
+                d = pd.read_csv(f)
+                d = d[d["effect"] != "indirect"]
+                parts += [f"**{name}: original vs. measurement-error-adjusted (Rubin) effects**", "",
+                          "| Variable | Effect | Original | Adjusted (SE) | p | Range across draws | Share of variance from ACS error |",
+                          "|---|---|---|---|---|---|---|",
+                          *[f"| {r.label} | {r.effect} | {r.original_estimate:.4f}{stars(r.original_p)} | "
+                            f"{r.moe_estimate:.4f} ({r.moe_se:.4f}) | {r.moe_p:.4f} | [{r.moe_draw_low:.4f}, "
+                            f"{r.moe_draw_high:.4f}] | {r.moe_share_variance_from_measurement:.0%} |" for r in d.itertuples()], ""]
+            f = t / f"robust_estimators_{outcome}.csv"
+            if f.exists():
+                d = pd.read_csv(f)
+                d = d[d["effect"] == "total"]
+                d["cell"] = d.apply(lambda r: f"{r.estimate:.4f}{stars(r.p)}", axis=1)
+                parts += [f"**{name}: total effects by estimator**", "",
+                          d.pivot(index="label", columns="estimator", values="cell").to_markdown(), ""]
+    prof = t / "typology_profiles.csv"
+    if prof.exists():
+        d = pd.read_csv(prof)
+        sil = pd.read_csv(t / "typology_silhouette.csv")
+        parts += ["## 10. Neighborhood typology", "",
+                  f"k-means on nine standardized tract characteristics; k = {len(d)} chosen by silhouette score "
+                  f"({sil['silhouette'].max():.2f}; scores for k = 3 to 8: "
+                  f"{', '.join(f'{v:.2f}' for v in sil['silhouette'])}).", "",
+                  "| Type | Label | Tracts | Households | Burden (%) | Median income | Avg. energy cost | % Black | % Hispanic | % pre-1950 | % renter | In high-burden clusters |",
+                  "|---|---|---|---|---|---|---|---|---|---|---|---|",
+                  *[f"| {r.type} | {r.label} | {r.tracts} | {r.households:,.0f} | {r.burden_pct:.2f} | "
+                    f"${r.median_income:,.0f} | ${r.avg_energy_cost:,.0f} | {r.pct_black:.0f} | {r.pct_hispanic:.0f} | "
+                    f"{r.pct_pre1950:.0f} | {r.pct_renter:.0f} | {r.share_in_high_burden_clusters:.0%} |"
+                    for r in d.itertuples()], ""]
+        im = img("map_typology.png", "Neighborhood types")
+        if im:
+            parts += [im, ""]
     parts += ["## Notebooks", "", "Step-by-step notebooks with live outputs are in "
               "[`notebooks/`](../notebooks/).", ""]
 
