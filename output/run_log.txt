@@ -1,4 +1,4 @@
-Run started 2026-11-16 00:59 UTC, commit 78b466f
+Run started 2026-11-16 01:10 UTC, commit ca7f82d
 
 ===== unit tests =====
 ...................                                                      [100%]
@@ -8,7 +8,7 @@ tests/test_core.py::test_fractional_logit_runs
     return self._fit_irls(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-19 passed, 1 warning in 2.32s
+19 passed, 1 warning in 2.73s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
@@ -182,8 +182,8 @@ Saved tables to output/tables
   W.__init__(self, neighbors, id_order=ids, **kwargs)
 {
   "aicc": 338.846677965372,
-  "r2": 0.943293474271004,
-  "adj_r2": 0.9299897113461167,
+  "r2": 0.9432934742710039,
+  "adj_r2": 0.9299897113461166,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
@@ -193,10 +193,10 @@ Saved tables to output/tables
     "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.282588149367193,
+  "max_local_condition_number": 9.282588149367191,
   "share_tracts_cn_over_30": 0.0,
   "n": 768,
-  "effective_parameters": 145.74980848650583,
+  "effective_parameters": 145.74980848650586,
   "logll_original_scale": -509.63849493388216,
   "aic_original_scale": 1312.776606840776,
   "share_tracts_significant": {
@@ -208,7 +208,7 @@ Saved tables to output/tables
     "pct_renter": 0.0,
     "pct_multifam5": 0.9505208333333334
   },
-  "moran_resid_I": -0.027272889272055286
+  "moran_resid_I": -0.027272889272055345
 }
 
 Model comparison, energy burden
@@ -371,7 +371,7 @@ Validation: {
   },
   "annual_cost": {
     "n": 768,
-    "pearson": 0.8572405162859255,
+    "pearson": 0.8572405162859253,
     "spearman": 0.8498965738450349,
     "top_quintile_overlap": 0.6428571428571429
   },
@@ -1057,6 +1057,6 @@ wrote notebooks/06_policy_and_context.ipynb
 [NbConvertApp] Writing 486699 bytes to notebooks/06_policy_and_context.ipynb
 [NbConvertApp] Converting notebook notebooks/07_typology.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
-[NbConvertApp] Writing 598243 bytes to notebooks/07_typology.ipynb
+[NbConvertApp] Writing 497627 bytes to notebooks/07_typology.ipynb
 
-Run finished 2026-11-16 01:08 UTC, status=0
+Run finished 2026-11-16 01:17 UTC, status=0
