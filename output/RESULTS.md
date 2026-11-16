@@ -1,6 +1,6 @@
 # Results: Household Energy Burden Across Chicago
 
-_Generated 2026-11-16 00:56 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
+_Generated 2026-11-16 01:08 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
 
 ## 1. Sample
 
@@ -630,13 +630,17 @@ Margin-of-error simulation: 200 draws of every ACS input, spatial Durbin model r
 
 - Effects significant in the main model that stay significant after accounting for ACS measurement error: 7 of 9 (lost: % housing built before 1950 direct, % housing built before 1950 indirect).
 - Largest share of an effect's variance due to measurement error: 65% (ln(median household income), direct).
-- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: 2 of 6.
+- Direct effects with the same sign and significance under all five estimators (ML Durbin, S2SLS Durbin, GMM Durbin, SLX with spatial HAC, GMM spatial error): 3 of 6.
+- Total effects with the same sign and significance in the ML Durbin model and the SLX model with spatial HAC standard errors: 6 of 6.
+- Spatial lag parameter rho: GMM spatial Durbin, heteroskedasticity-robust 0.90 (SE 0.12); ML spatial Durbin (main) 0.62 (SE 0.04); S2SLS spatial Durbin, White SEs 0.96 (SE 0.12). The instrumental-variable estimators identify rho only weakly once neighbors' covariates are in the model, so their total effects (which divide by 1 - rho) are not used.
 
 ### ln(average energy cost)
 
 - Effects significant in the main model that stay significant after accounting for ACS measurement error: 10 of 14 (lost: % Black direct, % Hispanic direct, % Hispanic total, % housing built before 1950 indirect).
 - Largest share of an effect's variance due to measurement error: 58% (ln(median household income), direct).
-- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: 2 of 6.
+- Direct effects with the same sign and significance under all five estimators (ML Durbin, S2SLS Durbin, GMM Durbin, SLX with spatial HAC, GMM spatial error): 3 of 6.
+- Total effects with the same sign and significance in the ML Durbin model and the SLX model with spatial HAC standard errors: 6 of 6.
+- Spatial lag parameter rho: GMM spatial Durbin, heteroskedasticity-robust 0.90 (SE 0.54); ML spatial Durbin (main) 0.56 (SE 0.04); S2SLS spatial Durbin, White SEs 0.90 (SE 0.14). The instrumental-variable estimators identify rho only weakly once neighbors' covariates are in the model, so their total effects (which divide by 1 - rho) are not used.
 
 **Energy burden (%): original vs. measurement-error-adjusted (Rubin) effects**
 
@@ -655,16 +659,27 @@ Margin-of-error simulation: 200 draws of every ACS input, spatial Durbin model r
 | % units in 5+ unit buildings | direct | -0.0192*** | -0.0118 (0.0024) | 0.0000 | [-0.0146, -0.0091] | 37% |
 | % units in 5+ unit buildings | total | -0.0343*** | -0.0361 (0.0060) | 0.0000 | [-0.0411, -0.0312] | 20% |
 
-**Energy burden (%): total effects by estimator**
+**Energy burden (%): direct effects by estimator** (estimate, SE)
 
-| label                        |   GMM, heteroskedasticity-robust | ML (main)   | S2SLS, White SEs   |
-|:-----------------------------|---------------------------------:|:------------|:-------------------|
-| % Black                      |                          -0.0099 | 0.0115*     | -0.0270            |
-| % Hispanic                   |                          -0.0152 | 0.0003      | -0.0416            |
-| % housing built before 1950  |                          -0.0135 | -0.0081     | -0.0367            |
-| % renter-occupied            |                           0.0054 | 0.0083      | 0.0154             |
-| % units in 5+ unit buildings |                          -0.0178 | -0.0343***  | -0.0481            |
-| ln(median household income)  |                          -1.8243 | -2.2158***  | -4.8646*           |
+| label                        | GMM spatial Durbin, heteroskedasticity-robust   | GMM spatial error, heteroskedasticity-robust   | ML spatial Durbin (main)   | S2SLS spatial Durbin, White SEs   | SLX, spatial HAC SEs   |
+|:-----------------------------|:------------------------------------------------|:-----------------------------------------------|:---------------------------|:----------------------------------|:-----------------------|
+| % Black                      | 0.0060* (0.0031)                                | 0.0145*** (0.0019)                             | 0.0065* (0.0025)           | 0.0059* (0.0029)                  | 0.0053 (0.0032)        |
+| % Hispanic                   | 0.0050 (0.0032)                                 | 0.0071** (0.0024)                              | 0.0046 (0.0029)            | 0.0046 (0.0031)                   | 0.0031 (0.0034)        |
+| % housing built before 1950  | 0.0054* (0.0021)                                | 0.0054** (0.0017)                              | 0.0052** (0.0018)          | 0.0052* (0.0021)                  | 0.0057** (0.0022)      |
+| % renter-occupied            | 0.0004 (0.0032)                                 | -0.0014 (0.0024)                               | 0.0010 (0.0022)            | 0.0006 (0.0032)                   | 0.0013 (0.0027)        |
+| % units in 5+ unit buildings | -0.0179*** (0.0026)                             | -0.0221*** (0.0020)                            | -0.0192*** (0.0021)        | -0.0187*** (0.0025)               | -0.0188*** (0.0024)    |
+| ln(median household income)  | -1.7043*** (0.1779)                             | -1.8383*** (0.1501)                            | -1.7521*** (0.0965)        | -1.7795*** (0.1781)               | -1.7661*** (0.1664)    |
+
+**Energy burden (%): total effects by estimator** (estimate, SE)
+
+| label                        | ML spatial Durbin (main)   | SLX, spatial HAC SEs   |
+|:-----------------------------|:---------------------------|:-----------------------|
+| % Black                      | 0.0115* (0.0048)           | 0.0140*** (0.0028)     |
+| % Hispanic                   | 0.0003 (0.0053)            | 0.0030 (0.0031)        |
+| % housing built before 1950  | -0.0081 (0.0057)           | -0.0062 (0.0043)       |
+| % renter-occupied            | 0.0083 (0.0075)            | 0.0078 (0.0052)        |
+| % units in 5+ unit buildings | -0.0343*** (0.0056)        | -0.0334*** (0.0041)    |
+| ln(median household income)  | -2.2158*** (0.3063)        | -2.0442*** (0.1809)    |
 
 **ln(average energy cost): original vs. measurement-error-adjusted (Rubin) effects**
 
@@ -683,16 +698,27 @@ Margin-of-error simulation: 200 draws of every ACS input, spatial Durbin model r
 | % units in 5+ unit buildings | direct | -0.0073*** | -0.0062 (0.0004) | 0.0000 | [-0.0067, -0.0058] | 42% |
 | % units in 5+ unit buildings | total | -0.0110*** | -0.0109 (0.0008) | 0.0000 | [-0.0116, -0.0101] | 21% |
 
-**ln(average energy cost): total effects by estimator**
+**ln(average energy cost): direct effects by estimator** (estimate, SE)
 
-| label                        |   GMM, heteroskedasticity-robust | ML (main)   | S2SLS, White SEs   |
-|:-----------------------------|---------------------------------:|:------------|:-------------------|
-| % Black                      |                           0.0018 | 0.0035***   | 0.0036             |
-| % Hispanic                   |                           0.0002 | 0.0016*     | 0.0013             |
-| % housing built before 1950  |                          -0.0023 | -0.0006     | -0.0040            |
-| % renter-occupied            |                           0.0052 | 0.0018      | 0.0079             |
-| % units in 5+ unit buildings |                          -0.0091 | -0.0110***  | -0.0158**          |
-| ln(median household income)  |                           0.1606 | 0.1585***   | 0.2729             |
+| label                        | GMM spatial Durbin, heteroskedasticity-robust   | GMM spatial error, heteroskedasticity-robust   | ML spatial Durbin (main)   | S2SLS spatial Durbin, White SEs   | SLX, spatial HAC SEs   |
+|:-----------------------------|:------------------------------------------------|:-----------------------------------------------|:---------------------------|:----------------------------------|:-----------------------|
+| % Black                      | 0.0014* (0.0007)                                | 0.0030*** (0.0003)                             | 0.0014*** (0.0004)         | 0.0014** (0.0007)                 | 0.0013* (0.0006)       |
+| % Hispanic                   | 0.0014 (0.0007)                                 | 0.0019*** (0.0004)                             | 0.0013** (0.0004)          | 0.0014** (0.0006)                 | 0.0012* (0.0005)       |
+| % housing built before 1950  | 0.0011 (0.0008)                                 | 0.0012*** (0.0003)                             | 0.0011*** (0.0003)         | 0.0010* (0.0010)                  | 0.0012*** (0.0003)     |
+| % renter-occupied            | -0.0014 (0.0013)                                | -0.0018*** (0.0004)                            | -0.0014*** (0.0003)        | -0.0014* (0.0019)                 | -0.0013** (0.0005)     |
+| % units in 5+ unit buildings | -0.0071*** (0.0008)                             | -0.0080*** (0.0003)                            | -0.0073*** (0.0003)        | -0.0073*** (0.0022)               | -0.0073*** (0.0005)    |
+| ln(median household income)  | 0.1155* (0.0477)                                | 0.0990*** (0.0194)                             | 0.1189*** (0.0144)         | 0.1220*** (0.0794)                | 0.1186*** (0.0207)     |
+
+**ln(average energy cost): total effects by estimator** (estimate, SE)
+
+| label                        | ML spatial Durbin (main)   | SLX, spatial HAC SEs   |
+|:-----------------------------|:---------------------------|:-----------------------|
+| % Black                      | 0.0035*** (0.0006)         | 0.0035*** (0.0004)     |
+| % Hispanic                   | 0.0016* (0.0007)           | 0.0016*** (0.0004)     |
+| % housing built before 1950  | -0.0006 (0.0007)           | -0.0001 (0.0005)       |
+| % renter-occupied            | 0.0018 (0.0010)            | 0.0008 (0.0007)        |
+| % units in 5+ unit buildings | -0.0110*** (0.0007)        | -0.0102*** (0.0006)    |
+| ln(median household income)  | 0.1585*** (0.0408)         | 0.1393*** (0.0304)     |
 
 ## 10. Neighborhood typology
 

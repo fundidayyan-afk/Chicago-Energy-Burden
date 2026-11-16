@@ -1,4 +1,4 @@
-Run started 2026-11-16 00:49 UTC, commit ca82ca1
+Run started 2026-11-16 00:59 UTC, commit 78b466f
 
 ===== unit tests =====
 ...................                                                      [100%]
@@ -8,7 +8,7 @@ tests/test_core.py::test_fractional_logit_runs
     return self._fit_irls(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-19 passed, 1 warning in 1.72s
+19 passed, 1 warning in 2.32s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
@@ -182,8 +182,8 @@ Saved tables to output/tables
   W.__init__(self, neighbors, id_order=ids, **kwargs)
 {
   "aicc": 338.846677965372,
-  "r2": 0.9432934742710039,
-  "adj_r2": 0.9299897113461166,
+  "r2": 0.943293474271004,
+  "adj_r2": 0.9299897113461167,
   "bandwidths": {
     "CONSTANT": 433.0,
     "ln_income": 18.0,
@@ -193,10 +193,10 @@ Saved tables to output/tables
     "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "max_local_condition_number": 9.282588149367191,
+  "max_local_condition_number": 9.282588149367193,
   "share_tracts_cn_over_30": 0.0,
   "n": 768,
-  "effective_parameters": 145.74980848650586,
+  "effective_parameters": 145.74980848650583,
   "logll_original_scale": -509.63849493388216,
   "aic_original_scale": 1312.776606840776,
   "share_tracts_significant": {
@@ -208,7 +208,7 @@ Saved tables to output/tables
     "pct_renter": 0.0,
     "pct_multifam5": 0.9505208333333334
   },
-  "moran_resid_I": -0.027272889272055345
+  "moran_resid_I": -0.027272889272055286
 }
 
 Model comparison, energy burden
@@ -371,7 +371,7 @@ Validation: {
   },
   "annual_cost": {
     "n": 768,
-    "pearson": 0.8572405162859253,
+    "pearson": 0.8572405162859255,
     "spearman": 0.8498965738450349,
     "top_quintile_overlap": 0.6428571428571429
   },
@@ -714,16 +714,17 @@ pct_multifam5    total            -0.0343      0.0005       -0.0361  0.0060 0.00
 ML_Lag
 GM_Lag
 GM_Combo_Het
+GM_Error_Het
 
-Energy burden (%): total-effect p-values by estimator
-estimator                     GMM, heteroskedasticity-robust  ML (main)  S2SLS, White SEs
-label                                                                                    
-% Black                                               0.8856     0.0200            0.9439
-% Hispanic                                            0.4319     0.9590            0.4817
-% housing built before 1950                           0.4294     0.1410            0.3564
-% renter-occupied                                     0.7348     0.2520            0.6688
-% units in 5+ unit buildings                          0.3923     0.0005            0.1806
-ln(median household income)                           0.1572     0.0005            0.0439
+Energy burden (%): direct-effect p-values by estimator
+estimator                     GMM spatial Durbin, heteroskedasticity-robust  GMM spatial error, heteroskedasticity-robust  ML spatial Durbin (main)  S2SLS spatial Durbin, White SEs  SLX, spatial HAC SEs
+label                                                                                                                                                                                                     
+% Black                                                              0.0486                                        0.0000                    0.0130                           0.0439                0.0999
+% Hispanic                                                           0.1061                                        0.0029                    0.1060                           0.1221                0.3586
+% housing built before 1950                                          0.0141                                        0.0014                    0.0050                           0.0163                0.0097
+% renter-occupied                                                    0.8831                                        0.5573                    0.6320                           0.7958                0.6331
+% units in 5+ unit buildings                                         0.0006                                        0.0000                    0.0005                           0.0008                0.0000
+ln(median household income)                                          0.0006                                        0.0000                    0.0005                           0.0008                0.0000
 ML_Lag
 ML_Lag
 ML_Lag
@@ -949,16 +950,17 @@ pct_multifam5    total            -0.0110      0.0005       -0.0109  0.0008 0.00
 ML_Lag
 GM_Lag
 GM_Combo_Het
+GM_Error_Het
 
-ln(average energy cost): total-effect p-values by estimator
-estimator                     GMM, heteroskedasticity-robust  ML (main)  S2SLS, White SEs
-label                                                                                    
-% Black                                               0.4560     0.0005            0.1445
-% Hispanic                                            0.7236     0.0210            0.4779
-% housing built before 1950                           0.7764     0.3840            0.1888
-% renter-occupied                                     0.8961     0.0580            0.0938
-% units in 5+ unit buildings                          0.1796     0.0005            0.0052
-ln(median household income)                           0.6162     0.0005            0.0990
+ln(average energy cost): direct-effect p-values by estimator
+estimator                     GMM spatial Durbin, heteroskedasticity-robust  GMM spatial error, heteroskedasticity-robust  ML spatial Durbin (main)  S2SLS spatial Durbin, White SEs  SLX, spatial HAC SEs
+label                                                                                                                                                                                                     
+% Black                                                              0.0352                                        0.0000                    0.0005                           0.0013                0.0295
+% Hispanic                                                           0.0634                                        0.0000                    0.0020                           0.0052                0.0206
+% housing built before 1950                                          0.0687                                        0.0001                    0.0005                           0.0182                0.0005
+% renter-occupied                                                    0.1127                                        0.0000                    0.0005                           0.0326                0.0042
+% units in 5+ unit buildings                                         0.0009                                        0.0000                    0.0005                           0.0007                0.0000
+ln(median household income)                                          0.0176                                        0.0000                    0.0005                           0.0007                0.0000
 # Measurement error and heteroskedasticity
 
 Margin-of-error simulation: 200 draws of every ACS input, spatial Durbin model refit each time, combined with Rubin's rules.
@@ -967,13 +969,17 @@ Margin-of-error simulation: 200 draws of every ACS input, spatial Durbin model r
 
 - Effects significant in the main model that stay significant after accounting for ACS measurement error: 7 of 9 (lost: % housing built before 1950 direct, % housing built before 1950 indirect).
 - Largest share of an effect's variance due to measurement error: 65% (ln(median household income), direct).
-- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: 2 of 6.
+- Direct effects with the same sign and significance under all five estimators (ML Durbin, S2SLS Durbin, GMM Durbin, SLX with spatial HAC, GMM spatial error): 3 of 6.
+- Total effects with the same sign and significance in the ML Durbin model and the SLX model with spatial HAC standard errors: 6 of 6.
+- Spatial lag parameter rho: GMM spatial Durbin, heteroskedasticity-robust 0.90 (SE 0.12); ML spatial Durbin (main) 0.62 (SE 0.04); S2SLS spatial Durbin, White SEs 0.96 (SE 0.12). The instrumental-variable estimators identify rho only weakly once neighbors' covariates are in the model, so their total effects (which divide by 1 - rho) are not used.
 
 ## ln(average energy cost)
 
 - Effects significant in the main model that stay significant after accounting for ACS measurement error: 10 of 14 (lost: % Black direct, % Hispanic direct, % Hispanic total, % housing built before 1950 indirect).
 - Largest share of an effect's variance due to measurement error: 58% (ln(median household income), direct).
-- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: 2 of 6.
+- Direct effects with the same sign and significance under all five estimators (ML Durbin, S2SLS Durbin, GMM Durbin, SLX with spatial HAC, GMM spatial error): 3 of 6.
+- Total effects with the same sign and significance in the ML Durbin model and the SLX model with spatial HAC standard errors: 6 of 6.
+- Spatial lag parameter rho: GMM spatial Durbin, heteroskedasticity-robust 0.90 (SE 0.54); ML spatial Durbin (main) 0.56 (SE 0.04); S2SLS spatial Durbin, White SEs 0.90 (SE 0.14). The instrumental-variable estimators identify rho only weakly once neighbors' covariates are in the model, so their total effects (which divide by 1 - rho) are not used.
 
 
 ===== 14_typology =====
@@ -1045,7 +1051,7 @@ wrote notebooks/06_policy_and_context.ipynb
 [NbConvertApp] Writing 1890442 bytes to notebooks/04_mgwr.ipynb
 [NbConvertApp] Converting notebook notebooks/05_robustness.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
-[NbConvertApp] Writing 62205 bytes to notebooks/05_robustness.ipynb
+[NbConvertApp] Writing 68630 bytes to notebooks/05_robustness.ipynb
 [NbConvertApp] Converting notebook notebooks/06_policy_and_context.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
 [NbConvertApp] Writing 486699 bytes to notebooks/06_policy_and_context.ipynb
@@ -1053,4 +1059,4 @@ wrote notebooks/06_policy_and_context.ipynb
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
 [NbConvertApp] Writing 598243 bytes to notebooks/07_typology.ipynb
 
-Run finished 2026-11-16 00:56 UTC, status=0
+Run finished 2026-11-16 01:08 UTC, status=0
