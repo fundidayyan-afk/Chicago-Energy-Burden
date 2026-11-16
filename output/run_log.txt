@@ -1,14 +1,14 @@
-Run started 2026-11-14 23:48 UTC, commit fd04597
+Run started 2026-11-16 00:49 UTC, commit ca82ca1
 
 ===== unit tests =====
-.................                                                        [100%]
+...................                                                      [100%]
 =============================== warnings summary ===============================
 tests/test_core.py::test_fractional_logit_runs
   /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/statsmodels/genmod/generalized_linear_model.py:1269: PerfectSeparationWarning: Perfect separation or prediction detected, parameter may not be identified
     return self._fit_irls(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-17 passed, 1 warning in 2.28s
+19 passed, 1 warning in 1.72s
 
 ===== 01_download =====
 LEAD 2022 (Illinois)
@@ -480,6 +480,518 @@ Before 1950          352             71.6                      55.9
 1950-1979            342             79.5                      62.6
 1980 or later        568             62.8                      37.5
 
+===== 13_uncertainty =====
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/contiguity.py:347: UserWarning: The weights matrix is not fully connected: 
+ There are 2 disconnected components.
+ There is 1 island with id: 371.
+  W.__init__(self, neighbors, ids=ids, **kw)
+  note: 1 tract(s) with no touching neighbor ['17043840000']; linked to nearest tract
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/libpysal/weights/distance.py:153: UserWarning: The weights matrix is not fully connected: 
+ There are 207 disconnected components.
+  W.__init__(self, neighbors, id_order=ids, **kwargs)
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+
+Energy burden (%): margin-of-error simulation
+         term   effect  original_estimate  original_p  moe_estimate  moe_se  moe_p  moe_share_variance_from_measurement  moe_draw_low  moe_draw_high  share_draws_significant                        label
+    ln_income   direct            -1.7521      0.0005       -0.9413  0.1223 0.0000                               0.6531       -1.1247        -0.7480                    1.000  ln(median household income)
+    ln_income indirect            -0.4637      0.0970       -0.9419  0.3183 0.0031                               0.3091       -1.2671        -0.6104                    0.990  ln(median household income)
+    ln_income    total            -2.2158      0.0005       -1.8832  0.3525 0.0000                               0.3409       -2.2607        -1.5359                    1.000  ln(median household income)
+    pct_black   direct             0.0065      0.0130        0.0068  0.0030 0.0217                               0.5782        0.0027         0.0108                    0.920                      % Black
+    pct_black indirect             0.0050      0.3280        0.0083  0.0060 0.1714                               0.3942        0.0012         0.0154                    0.410                      % Black
+    pct_black    total             0.0115      0.0200        0.0151  0.0056 0.0070                               0.2900        0.0095         0.0205                    0.980                      % Black
+ pct_hispanic   direct             0.0046      0.1060        0.0029  0.0028 0.3077                               0.4687       -0.0010         0.0072                    0.235                   % Hispanic
+ pct_hispanic indirect            -0.0043      0.4640        0.0004  0.0063 0.9504                               0.3378       -0.0061         0.0078                    0.000                   % Hispanic
+ pct_hispanic    total             0.0003      0.9590        0.0033  0.0060 0.5862                               0.2708       -0.0020         0.0094                    0.015                   % Hispanic
+  pct_pre1950   direct             0.0052      0.0050        0.0036  0.0020 0.0735                               0.3657        0.0013         0.0059                    0.655  % housing built before 1950
+  pct_pre1950 indirect            -0.0133      0.0100       -0.0100  0.0058 0.0855                               0.2114       -0.0148        -0.0045                    0.495  % housing built before 1950
+  pct_pre1950    total            -0.0081      0.1410       -0.0064  0.0060 0.2906                               0.1752       -0.0117        -0.0010                    0.030  % housing built before 1950
+   pct_renter   direct             0.0010      0.6320        0.0057  0.0025 0.0252                               0.5163        0.0017         0.0093                    0.895            % renter-occupied
+   pct_renter indirect             0.0073      0.2900        0.0058  0.0078 0.4592                               0.2694       -0.0019         0.0131                    0.040            % renter-occupied
+   pct_renter    total             0.0083      0.2520        0.0115  0.0083 0.1670                               0.2475        0.0023         0.0187                    0.275            % renter-occupied
+pct_multifam5   direct            -0.0192      0.0005       -0.0118  0.0024 0.0000                               0.3743       -0.0146        -0.0091                    1.000 % units in 5+ unit buildings
+pct_multifam5 indirect            -0.0151      0.0060       -0.0243  0.0061 0.0001                               0.2509       -0.0298        -0.0184                    1.000 % units in 5+ unit buildings
+pct_multifam5    total            -0.0343      0.0005       -0.0361  0.0060 0.0000                               0.2027       -0.0411        -0.0312                    1.000 % units in 5+ unit buildings
+ML_Lag
+GM_Lag
+GM_Combo_Het
+
+Energy burden (%): total-effect p-values by estimator
+estimator                     GMM, heteroskedasticity-robust  ML (main)  S2SLS, White SEs
+label                                                                                    
+% Black                                               0.8856     0.0200            0.9439
+% Hispanic                                            0.4319     0.9590            0.4817
+% housing built before 1950                           0.4294     0.1410            0.3564
+% renter-occupied                                     0.7348     0.2520            0.6688
+% units in 5+ unit buildings                          0.3923     0.0005            0.1806
+ln(median household income)                           0.1572     0.0005            0.0439
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+ML_Lag
+
+ln(average energy cost): margin-of-error simulation
+         term   effect  original_estimate  original_p  moe_estimate  moe_se  moe_p  moe_share_variance_from_measurement  moe_draw_low  moe_draw_high  share_draws_significant                        label
+    ln_income   direct             0.1189      0.0005        0.0804  0.0169 0.0000                               0.5769        0.0585         0.1097                    1.000  ln(median household income)
+    ln_income indirect             0.0396      0.2760        0.0397  0.0405 0.3271                               0.2698       -0.0036         0.0829                    0.095  ln(median household income)
+    ln_income    total             0.1585      0.0005        0.1201  0.0440 0.0064                               0.2814        0.0657         0.1649                    0.965  ln(median household income)
+    pct_black   direct             0.0014      0.0005        0.0004  0.0004 0.3281                               0.5003       -0.0001         0.0010                    0.265                      % Black
+    pct_black indirect             0.0021      0.0040        0.0029  0.0008 0.0002                               0.3468        0.0020         0.0038                    0.995                      % Black
+    pct_black    total             0.0035      0.0005        0.0033  0.0007 0.0000                               0.2313        0.0026         0.0039                    1.000                      % Black
+ pct_hispanic   direct             0.0013      0.0020        0.0007  0.0004 0.1195                               0.4565        0.0001         0.0011                    0.600                   % Hispanic
+ pct_hispanic indirect             0.0002      0.7760        0.0006  0.0008 0.4732                               0.3131       -0.0003         0.0014                    0.055                   % Hispanic
+ pct_hispanic    total             0.0016      0.0210        0.0013  0.0007 0.0898                               0.2071        0.0006         0.0019                    0.480                   % Hispanic
+  pct_pre1950   direct             0.0011      0.0005        0.0010  0.0003 0.0009                               0.3744        0.0006         0.0014                    0.995  % housing built before 1950
+  pct_pre1950 indirect            -0.0017      0.0100       -0.0013  0.0008 0.0828                               0.2310       -0.0019        -0.0007                    0.565  % housing built before 1950
+  pct_pre1950    total            -0.0006      0.3840       -0.0003  0.0008 0.7031                               0.2011       -0.0010         0.0003                    0.000  % housing built before 1950
+   pct_renter   direct            -0.0014      0.0005       -0.0014  0.0004 0.0003                               0.4853       -0.0019        -0.0009                    1.000            % renter-occupied
+   pct_renter indirect             0.0032      0.0010        0.0024  0.0010 0.0196                               0.2619        0.0013         0.0034                    0.870            % renter-occupied
+   pct_renter    total             0.0018      0.0580        0.0010  0.0011 0.3434                               0.2362       -0.0000         0.0020                    0.060            % renter-occupied
+pct_multifam5   direct            -0.0073      0.0005       -0.0062  0.0004 0.0000                               0.4226       -0.0067        -0.0058                    1.000 % units in 5+ unit buildings
+pct_multifam5 indirect            -0.0037      0.0005       -0.0047  0.0008 0.0000                               0.2522       -0.0054        -0.0038                    1.000 % units in 5+ unit buildings
+pct_multifam5    total            -0.0110      0.0005       -0.0109  0.0008 0.0000                               0.2138       -0.0116        -0.0101                    1.000 % units in 5+ unit buildings
+ML_Lag
+GM_Lag
+GM_Combo_Het
+
+ln(average energy cost): total-effect p-values by estimator
+estimator                     GMM, heteroskedasticity-robust  ML (main)  S2SLS, White SEs
+label                                                                                    
+% Black                                               0.4560     0.0005            0.1445
+% Hispanic                                            0.7236     0.0210            0.4779
+% housing built before 1950                           0.7764     0.3840            0.1888
+% renter-occupied                                     0.8961     0.0580            0.0938
+% units in 5+ unit buildings                          0.1796     0.0005            0.0052
+ln(median household income)                           0.6162     0.0005            0.0990
+# Measurement error and heteroskedasticity
+
+Margin-of-error simulation: 200 draws of every ACS input, spatial Durbin model refit each time, combined with Rubin's rules.
+
+## Energy burden (%)
+
+- Effects significant in the main model that stay significant after accounting for ACS measurement error: 7 of 9 (lost: % housing built before 1950 direct, % housing built before 1950 indirect).
+- Largest share of an effect's variance due to measurement error: 65% (ln(median household income), direct).
+- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: 2 of 6.
+
+## ln(average energy cost)
+
+- Effects significant in the main model that stay significant after accounting for ACS measurement error: 10 of 14 (lost: % Black direct, % Hispanic direct, % Hispanic total, % housing built before 1950 indirect).
+- Largest share of an effect's variance due to measurement error: 58% (ln(median household income), direct).
+- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: 2 of 6.
+
+
+===== 14_typology =====
+ k  silhouette  inertia
+ 3       0.306 3656.732
+ 4       0.278 3067.577
+ 5       0.278 2682.886
+ 6       0.277 2332.950
+ 7       0.258 2154.564
+ 8       0.252 1992.368 
+Chosen k = 3
+      burden_pct  pct_black  pct_hispanic  pct_pre1950  pct_renter  pct_multifam5  pct_elec_heat  households  tracts  median_income  avg_energy_cost                                                    label  share_in_high_burden_clusters
+type                                                                                                                                                                                                                                        
+1           5.46      84.75          9.90        54.51       60.10          23.42          11.29   239768.80     231       38971.55          2896.17                High burden: high Black share, low income                           0.66
+2           2.70       6.23         44.24        55.90       44.23          20.83           7.63   491532.54     379       83964.62          2675.56    Moderate burden: low Black share, high Hispanic share                           0.05
+3           1.60      23.73         10.46        34.89       67.76          78.54          30.67   322908.58     158       71611.05          1461.34  Low burden: high large-building share, low energy bills                           0.01
+Saved typology tables and map
+
 ===== 09_web_data =====
 Community areas: 77; tracts matched: 764
 Water layers: ['lake', 'water']
@@ -502,9 +1014,9 @@ Water layers: ['lake', 'water']
     "pct_renter": 760.0,
     "pct_multifam5": 157.0
   },
-  "updated": "2026-11-14"
+  "updated": "2026-11-16"
 }
-Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/web/tracts.geojson (0.57 MB)
+Wrote /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/output/web/tracts.geojson (0.58 MB)
 
 ===== 07_report =====
 /home/runner/work/Chicago-Energy-Burden/Chicago-Energy-Burden/scripts/07_report.py:145: Pandas4Warning: 'str' is not supported as a fill value for float64 dtype. In a future version, calling fillna with an incompatible value will raise. Explicitly cast to a common dtype before filling.
@@ -517,6 +1029,7 @@ wrote notebooks/02_exploratory_spatial_analysis.ipynb
 wrote notebooks/03_regression_models.ipynb
 wrote notebooks/04_mgwr.ipynb
 wrote notebooks/05_robustness.ipynb
+wrote notebooks/07_typology.ipynb
 wrote notebooks/06_policy_and_context.ipynb
 [NbConvertApp] Converting notebook notebooks/01_data_and_validation.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
@@ -532,9 +1045,12 @@ wrote notebooks/06_policy_and_context.ipynb
 [NbConvertApp] Writing 1890442 bytes to notebooks/04_mgwr.ipynb
 [NbConvertApp] Converting notebook notebooks/05_robustness.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
-[NbConvertApp] Writing 31884 bytes to notebooks/05_robustness.ipynb
+[NbConvertApp] Writing 62205 bytes to notebooks/05_robustness.ipynb
 [NbConvertApp] Converting notebook notebooks/06_policy_and_context.ipynb to notebook
 [IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
 [NbConvertApp] Writing 486699 bytes to notebooks/06_policy_and_context.ipynb
+[NbConvertApp] Converting notebook notebooks/07_typology.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 598243 bytes to notebooks/07_typology.ipynb
 
-Run finished 2026-11-14 23:54 UTC, status=0
+Run finished 2026-11-16 00:56 UTC, status=0

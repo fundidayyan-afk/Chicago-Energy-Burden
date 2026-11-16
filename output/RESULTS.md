@@ -1,6 +1,6 @@
 # Results: Household Energy Burden Across Chicago
 
-_Generated 2026-11-14 23:53 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
+_Generated 2026-11-16 00:56 UTC by the pipeline. Do not edit by hand; rerun the workflow instead._
 
 ## 1. Sample
 
@@ -621,6 +621,90 @@ _Counts use LEAD household-group averages, so they approximate how many househol
 | 1980 or later |         568 |              62.8 |                       37.5 |
 
 _Buildings of about 50,000 sq ft and up only; supporting context, not a household measure._
+
+## 9. Measurement error and heteroskedasticity
+
+Margin-of-error simulation: 200 draws of every ACS input, spatial Durbin model refit each time, combined with Rubin's rules.
+
+### Energy burden (%)
+
+- Effects significant in the main model that stay significant after accounting for ACS measurement error: 7 of 9 (lost: % housing built before 1950 direct, % housing built before 1950 indirect).
+- Largest share of an effect's variance due to measurement error: 65% (ln(median household income), direct).
+- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: 2 of 6.
+
+### ln(average energy cost)
+
+- Effects significant in the main model that stay significant after accounting for ACS measurement error: 10 of 14 (lost: % Black direct, % Hispanic direct, % Hispanic total, % housing built before 1950 indirect).
+- Largest share of an effect's variance due to measurement error: 58% (ln(median household income), direct).
+- Total effects with the same sign and significance under ML, S2SLS-White, and GMM-HET: 2 of 6.
+
+**Energy burden (%): original vs. measurement-error-adjusted (Rubin) effects**
+
+| Variable | Effect | Original | Adjusted (SE) | p | Range across draws | Share of variance from ACS error |
+|---|---|---|---|---|---|---|
+| ln(median household income) | direct | -1.7521*** | -0.9413 (0.1223) | 0.0000 | [-1.1247, -0.7480] | 65% |
+| ln(median household income) | total | -2.2158*** | -1.8832 (0.3525) | 0.0000 | [-2.2607, -1.5359] | 34% |
+| % Black | direct | 0.0065* | 0.0068 (0.0030) | 0.0217 | [0.0027, 0.0108] | 58% |
+| % Black | total | 0.0115* | 0.0151 (0.0056) | 0.0070 | [0.0095, 0.0205] | 29% |
+| % Hispanic | direct | 0.0046 | 0.0029 (0.0028) | 0.3077 | [-0.0010, 0.0072] | 47% |
+| % Hispanic | total | 0.0003 | 0.0033 (0.0060) | 0.5862 | [-0.0020, 0.0094] | 27% |
+| % housing built before 1950 | direct | 0.0052** | 0.0036 (0.0020) | 0.0735 | [0.0013, 0.0059] | 37% |
+| % housing built before 1950 | total | -0.0081 | -0.0064 (0.0060) | 0.2906 | [-0.0117, -0.0010] | 18% |
+| % renter-occupied | direct | 0.0010 | 0.0057 (0.0025) | 0.0252 | [0.0017, 0.0093] | 52% |
+| % renter-occupied | total | 0.0083 | 0.0115 (0.0083) | 0.1670 | [0.0023, 0.0187] | 25% |
+| % units in 5+ unit buildings | direct | -0.0192*** | -0.0118 (0.0024) | 0.0000 | [-0.0146, -0.0091] | 37% |
+| % units in 5+ unit buildings | total | -0.0343*** | -0.0361 (0.0060) | 0.0000 | [-0.0411, -0.0312] | 20% |
+
+**Energy burden (%): total effects by estimator**
+
+| label                        |   GMM, heteroskedasticity-robust | ML (main)   | S2SLS, White SEs   |
+|:-----------------------------|---------------------------------:|:------------|:-------------------|
+| % Black                      |                          -0.0099 | 0.0115*     | -0.0270            |
+| % Hispanic                   |                          -0.0152 | 0.0003      | -0.0416            |
+| % housing built before 1950  |                          -0.0135 | -0.0081     | -0.0367            |
+| % renter-occupied            |                           0.0054 | 0.0083      | 0.0154             |
+| % units in 5+ unit buildings |                          -0.0178 | -0.0343***  | -0.0481            |
+| ln(median household income)  |                          -1.8243 | -2.2158***  | -4.8646*           |
+
+**ln(average energy cost): original vs. measurement-error-adjusted (Rubin) effects**
+
+| Variable | Effect | Original | Adjusted (SE) | p | Range across draws | Share of variance from ACS error |
+|---|---|---|---|---|---|---|
+| ln(median household income) | direct | 0.1189*** | 0.0804 (0.0169) | 0.0000 | [0.0585, 0.1097] | 58% |
+| ln(median household income) | total | 0.1585*** | 0.1201 (0.0440) | 0.0064 | [0.0657, 0.1649] | 28% |
+| % Black | direct | 0.0014*** | 0.0004 (0.0004) | 0.3281 | [-0.0001, 0.0010] | 50% |
+| % Black | total | 0.0035*** | 0.0033 (0.0007) | 0.0000 | [0.0026, 0.0039] | 23% |
+| % Hispanic | direct | 0.0013** | 0.0007 (0.0004) | 0.1195 | [0.0001, 0.0011] | 46% |
+| % Hispanic | total | 0.0016* | 0.0013 (0.0007) | 0.0898 | [0.0006, 0.0019] | 21% |
+| % housing built before 1950 | direct | 0.0011*** | 0.0010 (0.0003) | 0.0009 | [0.0006, 0.0014] | 37% |
+| % housing built before 1950 | total | -0.0006 | -0.0003 (0.0008) | 0.7031 | [-0.0010, 0.0003] | 20% |
+| % renter-occupied | direct | -0.0014*** | -0.0014 (0.0004) | 0.0003 | [-0.0019, -0.0009] | 49% |
+| % renter-occupied | total | 0.0018 | 0.0010 (0.0011) | 0.3434 | [-0.0000, 0.0020] | 24% |
+| % units in 5+ unit buildings | direct | -0.0073*** | -0.0062 (0.0004) | 0.0000 | [-0.0067, -0.0058] | 42% |
+| % units in 5+ unit buildings | total | -0.0110*** | -0.0109 (0.0008) | 0.0000 | [-0.0116, -0.0101] | 21% |
+
+**ln(average energy cost): total effects by estimator**
+
+| label                        |   GMM, heteroskedasticity-robust | ML (main)   | S2SLS, White SEs   |
+|:-----------------------------|---------------------------------:|:------------|:-------------------|
+| % Black                      |                           0.0018 | 0.0035***   | 0.0036             |
+| % Hispanic                   |                           0.0002 | 0.0016*     | 0.0013             |
+| % housing built before 1950  |                          -0.0023 | -0.0006     | -0.0040            |
+| % renter-occupied            |                           0.0052 | 0.0018      | 0.0079             |
+| % units in 5+ unit buildings |                          -0.0091 | -0.0110***  | -0.0158**          |
+| ln(median household income)  |                           0.1606 | 0.1585***   | 0.2729             |
+
+## 10. Neighborhood typology
+
+k-means on nine standardized tract characteristics; k = 3 chosen by silhouette score (0.31; scores for k = 3 to 8: 0.31, 0.28, 0.28, 0.28, 0.26, 0.25).
+
+| Type | Label | Tracts | Households | Burden (%) | Median income | Avg. energy cost | % Black | % Hispanic | % pre-1950 | % renter | In high-burden clusters |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | High burden: high Black share, low income | 231 | 239,769 | 5.46 | $38,972 | $2,896 | 85 | 10 | 55 | 60 | 66% |
+| 2 | Moderate burden: low Black share, high Hispanic share | 379 | 491,533 | 2.70 | $83,965 | $2,676 | 6 | 44 | 56 | 44 | 5% |
+| 3 | Low burden: high large-building share, low energy bills | 158 | 322,909 | 1.60 | $71,611 | $1,461 | 24 | 10 | 35 | 68 | 1% |
+
+![Neighborhood types](figures/map_typology.png)
 
 ## Notebooks
 
