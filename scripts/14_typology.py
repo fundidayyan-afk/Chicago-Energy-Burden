@@ -84,7 +84,7 @@ if __name__ == "__main__":
     print(raw.round(2).to_string())
 
     # Small multiples: each panel highlights one type in the accent color
-    ncol = 3 if k > 4 else 2
+    ncol = k if k <= 4 else 3
     nrow = int(np.ceil(k / ncol))
     fig, axes = plt.subplots(nrow, ncol, figsize=(4.2 * ncol, 5.2 * nrow))
     axes = np.atleast_1d(axes).ravel()
